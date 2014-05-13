@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>Document</title>
+	<style type="text/css">	
+		.div2{background: red;width: 100%;height: 100px;}
+		.div3{background: green; float: left; width: 200px;height: 100px;}
+		.div4{background: blue;width: 100%;margin-left: 210px;height: 100px;}
+		.div-warp{overflow: hidden;margin-top: 10px;}
+		.back{width:50px;height: 50px;background: blue;position: fixed;top: 300px;right: 0;display: none;}
+		@media(max-width:600px){
+			.div3{float: none;width: 100%;}
+			.div4{margin: 10px 0 0 0;}
+		}
+	</style>
+	<script type="text/javascript">
+		window.onload = function(){
+			// var nav = document.getElementById('nav');
+			// var lis = nav.getElementsByTagName('li');
+			// for(var i=0;i<lis.length;i++){
+			// 	lis[i].onclick = (function(i){
+			// 		return function(){
+			// 			var object = {};
+			// 			// var name = this.getElementsByTagName('a')[0].innerHTML;
+			// 			var name = this.childNodes[0].firstChild.nodeValue;
+			// 			var link = this.getElementsByTagName('a')[0].href;
+			// 			object.index = i;
+			// 			object.link = link;
+			// 			object.name = name;
+			// 			console.log(object);
+			// 			event.preventDefault();
+			// 		}
+			// 	})(i)
+			// }
+
+			// var arr = [1,2,1,2,3,23,2,1,4,5,64,67,4,3,3,2,4,5,5,4,3,2,1,1];
+			// tongji(arr);
+
+			back();
+			
+		}
+
+		function getTop(obj){
+			var top = obj.offsetTop;
+			if(obj.offsetParent){
+				top += getTop(obj.offsetParent);
+			}
+
+			return top;
+		}
+
+		function tongji(arr){
+			var temp = [];
+			for(var i=0;i<arr.length;i++){
+				if(temp.hasOwnProperty(arr[i])){				
+					temp[arr[i]].num += 1;
+				}else{
+					temp[arr[i]] = {};
+					temp[arr[i]].num = 1;
+					temp[arr[i]].value = arr[i];
+				}
+			}
+			temp.sort(function(a,b){
+				if(a.num<b.num) return -1;
+				if(a.num==b.num){					
+					return a.value - b.value;
+				}
+				if(a.num>b.num)return 1;
+			})
+			for(var i in temp){
+				console.log(temp[i].value+"-"+temp[i].num);
+			}
+		}
+
+		function back(){
+			document.onscroll = function(){
+				var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+				if(scrollTop >100){
+				    document.querySelector('.back').style.display = 'block';
+				}
+				if(scrollTop <100){
+				    document.querySelector('.back').style.display = 'none';
+				}
+			}
+
+		document.querySelector('.back').onclick = function(){
+			var timer = setInterval(function(){
+              document.body.scrollTop -=30;
+              if(document.body.scrollTop<= 0) clearInterval(timer)
+			}, 30)
+		}		
+
+		}
+
+	</script>
+</head>
+<body>
+	<ul id = 'nav' style="height:1000px">
+
+		<li><a href=”http://ju.taobao.com/tg/brand.htm”>品牌团</a></li>
+		<li><a href=”http://ju.taobao.com/tg/point_list.htm”>整点聚</a></li>
+		<li><a href=”http://ju.taobao.com/jusp/jiazhuang/tp.htm”>聚家装</a></li>
+		<li><a href=”http://ju.taobao.com/jusp/liangfan/tp.htm”>量贩团</a></li>
+		<div class="back">返回</div>
+	</ul>
+</body>
+</html>
