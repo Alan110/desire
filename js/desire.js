@@ -1,472 +1,507 @@
-(function(window,undefined) {
-	var moduleMap = {};
-	var config = { 
-		paths:{}
-	};
-	var catchs = {};
-	/*----------------------------------------------------------------------模块管理,加载系统*/
-	var apple = {
-		/*模块定义接口
-		  可以返回函数或者对象*/
-		define:function(name,dependencies,factory){
-			if(!moduleMap[name]){
-				var module = {
-					name:name,
-					dependencies : dependencies,
-					factory : factory
-				}
-				moduleMap[name] = module;
-			}
-		},
-		/*实例化模块*/
-		use:function(name){
+/**j
+ * Created by Alane on 2014/4/9.
+ */
 
-			if(!moduleMap[name].instance){
-				var args = [],
-					f = function(){},
-					module = moduleMap[name];
+//对外接口
+function $(vArg) {
+	return new desire(vArg);
+}
 
-				for(var i=0,len = module.dependencies.length;i<len;i++){
-					var depModule = moduleMap[module.dependencies[i]];
+//*******************************************************
+//辅助函数
 
-					depModule.instance ?
-						args.push(depModule.instance) :
-						args.push(this.use(depModule.name));
-				}
+//wheelDelta--ie chrome，detail-FF
+//判断滑轮是否向下
+$.isWheelDown = function(event) {
+	return event.wheelDelta ? event.wheelDelta < 0 : event.detail > 0;
+}
 
-				module.instance = module.factory.apply(f,args);
-			}
+$.isArray = function(obj) {
+	return Object.prototype.toString.call(obj) === '[object Array]';
+}
 
-			return moduleMap[name].instance;
-		},
-
-		/*模块加载入口*/
-		require:function(dependencies,main){
-			var head = document.getElementsByTagName('head')[0],
-				index = 0,
-				length = config.paths.length || 0,
-				init = function(){
-					for(var i in moduleMap){
-						apple.use(i);
-					}
-
-					var arr = [];
-					for(var i=0,len = dependencies.length;i<len;i++){
-						if(!moduleMap[dependencies[i]]){
-							throw new Error('no find dependencies module '+ dependencies[i] +' definition ' );
-							return;
-						}
-						arr.push(moduleMap[dependencies[i]].instance);
-					}
-
-					var fn = function(){};
-					main.apply(fn,arr);
-
-				};
-/*L----*/
-			length == 0 && init();
-
-			for(var k in config.paths){
-                if(k == 'length') return;
-				var script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.onload = script.onreadystatechange = function(){
-					if( !this.readyState || this.readyState == 'complete' || this.readyState === "loaded" ){
-						index++;
-						index == length && init();
-
-						/*解决 ie 内存泄漏*/
-						script.onload = script.onreadystatechange = null;  
-					}
-				}
-
-                script.src = config.paths[k];
-                head.appendChild(script);
-            }
-
-		},
-
-		/*模块加载配置接口
-			path:[] */
-		requireCfg:function(cfg){
-			config.paths = cfg.paths;
-            var length = 0;
-            for(var i in cfg.paths){
-                length++;
-            }
-            config.paths.length = length;
+$.getCookie = function(c_name) {
+	if (document.cookie.length > 0) {
+		c_start = document.cookie.indexOf(c_name + "=");
+		if (c_start != -1) {
+			c_start = c_start + c_name.length + 1;
+			c_end = document.cookie.indexOf(";", c_start);
+			if (c_end == -1)
+				c_end = document.cookie.length;
+			return unescape(document.cookie.substring(c_start, c_end));
 		}
-	};
-	window.require = apple.require;   /*对外接口*/
-	window.define = apple.define;
-	window.requireCfg = apple.requireCfg;
+	}
+	return "";
+}
 
-	/*----------------------------------------------------------------------核心模块定义*/
-	apple.define('desire',['query','tools','catch'],function(query,tools,Catch){
-		var desire = function(selector,context){
-			return  new desire.fn.init(selector,context);
-		}
-		desire.fn = desire.prototype;
-		desire.fn.init = function(selector,context){
-			this.length = 0;
-			var self = this;
+$.setCookie = function(c_name, value, expiredays) {
+	var exdate = new Date();
+	exdate.setDate(exdate.getDate() + expiredays);
+	document.cookie = c_name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString()) + ";path=/";
+}
 
-			var els = query.find(selector,context);
-
-			tools.each(els,function(el,index){
-				self[index] = el;
-			})
-			this.length = els ? els.length : 0;
-		}
-		desire.fn.init.prototype = desire.fn;
-		desire.extend = desire.fn.extend = function(){
-
-			/*如果为true 则深拷贝*/
-			if(typeof arguments[0] === 'boolean' && arguments[0] && arguments.length > 2)
-			{
-				var tag = arguments[1];
-				tools.each( Array.prototype.slice.call(arguments,2),function(el,index){
-					tools.clone(tag,el,true);
-				})
-				return tag;
-
-			}else if(arguments.length === 1)
-			{
-				tools.clone(this,arguments[0],false);
-				return this;
-
-			}else
-			{
-				var tag = arguments[0];
-				tools.each( Array.prototype.slice.call(arguments,1),function(el,index){
-					tools.clone(tag,el,false);
-				})
-				return tag;
+$.getByClassName = function(obj, className) {
+	var eles = [];
+	var temps = obj.getElementsByTagName('*');
+	for (var i = 0; i < temps.length; i++) {
+		var obj1 = temps[i];
+		var names = obj1.className.split(' ');
+		for (var j = 0; j < names.length; j++) {
+			if (names[j] == className) {//包括该class名的元素
+				eles.push(obj1);
 			}
+		}
 
-		};
+	}
+	return eles;
+}
 
-		/*静态方法*/
-		desire.fn.extend({
-			eq:function(){
-				alert('a');
-			},
-
-			data:function(key,value){
-				if(arguments.length == 2){
-					tools.each(this,function(el,index){
-						Catch.data(el,key,value);
-					})
-				}else if(arguments.length == 1){
-					return 	Catch.data(this[0],key,value);
-				}
-			},
-
-			
-			/*  删除指定key 数据
-			  	key为空 则删除该对象上的所有缓存数据 */
-			removeData:function(key){
-				if(key){
-					tools.each(this,function(el,index){
-						Catch.removeDate(el,key);
-					})
-				}else{
-					tools.each(this,function(el,index){
-						Catch.removeDate(el);
-					})
-				}
-			},
-
-
-			on:function(type,handle){
-
+$.addEvent = function(obj, type, handle) {
+	if (obj.addEventListener) {
+		obj.addEventListener(type, function() {
+			if (false == handle.apply(obj, arguments)) {//由于使用了闭包，一定要传入所有的参数避免无法获取event对象
+				event.stopPropagation()//取消事件冒泡
+				event.preventDefault();
+				//标准 移除默认操作
+			}
+		}, false);
+	} else if (obj.attachEvent) {
+		obj.attachEvent('on' + type, function() {
+			if (false == handle.apply(obj, arguments)) {
+				window.event.cancelable = true;
+				return false;
+				// ie下移除默认操作
 			}
 		});
+	} else {
+		obj['on' + type] = handle;
+	}
+}
 
-		return desire;
-	})
+$.getStyle = function(obj, arr) {
+	if (obj.currentStyle) {
+		return obj.currentStyle[arr];
+	} else {
+		return getComputedStyle(obj, false)[arr];
+	}
+}
 
-	/*------------------------------------------------------------------------底层模块定义*/
-	apple.define('navigator',[],function(){
+//必须用在obj.style.attr 之后，否则obj.style.attr设置的属性无效
+$.setCssText = function(obj,css){
+	obj.style.cssText += ";"+css
+}
 
-		var clickFn,
-			select = document.createElement("select"),
-			opt = select.appendChild( document.createElement("option") );
-			div = document.createElement('div');
+$.addClass = function(obj, className) {
+	obj.className += ' ' + className;
+}
 
-		div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
-		div.test = 'ss';
-
-		var support =  {
-			leadingWhitespace:(div.firstChild.nodeType === 3),
-
-			// IE678无法通过div.innerHTML = '<link />';来插入link
-	        htmlSerialize: !!div.getElementsByTagName("link").length,
-
-			// checkbox的默认值为'on'，chrome  23.0.1271.95 m测试
-        	checkOn: ( div.getElementsByTagName('input')[0].value === "on" ),
-
-        	// IE中，第一个option不被默认选中，包括IE9依然如此，其他则选中
-        	optSelected: opt.selected,
-
-        	// IE6在克隆HTML5的新标签元素时outerHTML有":"
-        	html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
-
-        	// 检测诡异模式，也就是IE6没有doctype时的模式
-        	boxModel: ( document.compatMode === "CSS1Compat" ),
-
-			isWin:(window.navigator.userAgent.indexOf("Win") != -1),
-			isMac:(window.navigator.userAgent.indexOf("Mac") != -1),
-			isUnix:(window.navigator.userAgent.indexOf("X11") != -1)
+$.removeClass = function(obj, className) {
+	obj.className = obj.className.replace(' ' + className, '');
+}
+//序列化json为查询字符串
+$._serialize = function(obj) {
+	var a = [];
+	for (var k in obj) {
+		var val = obj[k];
+		if (val.constructor == {}) {//如果是对象，序列化对象,低版本浏览器有问题
+			a.push(k + "=" + encodeURIComponent(JSON.stringify(val)));
+		} else {
+			a.push(k + "=" + encodeURIComponent(val));
 		}
-
-		// IE678不能delete节点上的属性
-	    try {
-	        delete div.test;
-	    } catch( e ) {
-	        support.deleteExpando = false;
-	    }
-
-	    //IE会拷贝事件
-    	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
-	        div.attachEvent( "onclick", clickFn = function() {
-	            // Cloning a node shouldn't copy over any
-	            // bound event handlers (IE does this)
-	            support.CloneEvent = true;
-	        });
-	        div.cloneNode( true ).fireEvent("onclick");
-	        div.detachEvent( "onclick", clickFn );
-    	}
-
-    	//防止ie内存泄漏
-    	clickFn = select = opt = div = null;
-
-	    return support;
-	});
-
-	apple.define('tools',['type'],function(type){
-		return {
-
-			/*遍历元素-------------数组，对象，类数组,字符串*/
-			each:function(array,func){
-				if(type.isArrayLike(array)){
-					for(var i=0,len = array.length;i<len;i++){
-						func.call(array[i],array[i],i);
-					}
-				}else if(type.isString(array)){
-					var temp = function (){}
-					for(var i = 0,len = array.length;i<len;i++){
-						func.call(temp,array.charAt(i),i);
-					}
-				}else if(type.isObject(array)){
-					var temp = function (){}
-					for(var i in array){
-						func.call(temp,array[i],i);
-					}
-				}else{
-					throw new Error('each method no support the type');
-				}
-
-			},
-
-			/*包含指定内容-------数组,类数组,字符串*/
-			contains:function(data,target){
-				if(type.isString(data)){
-					return data.indexOf(target) > -1;
-				}else if( type.isArrayLike(data) ){
-					var b = false;
-					this.each(data,function(el,index){
-						if (el == target) b = true;
-					})
-					return b;
-				}else{
-					throw new Error('containes method no support the type');
-				}
-
-			},
-
-			/*得到 对象 属性的个数*/
-			getObjLength:function(obj){
-				var len = 0;
-				for(var i in obj){
-					len++;
-				}
-				return len;
-			},
-
-			/*克隆*/
-			clone:function(tag,src,deep){
-				deep = deep === true || false;
-				var self = this;
-
-				if(!deep){
-					this.each(src,function(el,index){
-						tag[index] = el;
-					})
-				}else{
-						/*深拷贝*/
-						this.each(src,function(el,index){
-							if( type.isArray(el)){
-								tag[index] = [];
-								self.clone(tag[index],el,deep);
-							}else if(type.isObject(el)){
-								tag[index] = {};
-								self.clone(tag[index],el,deep);
-							}else{
-								tag[index] = el;
-							}
-						})
-				}
-
-
-			}
+	}
+	return a.join('&');
+}
+//将有lenght属性的对象转换成数组
+$.toArray = function(s) {
+	try {
+		return Array.prototype.slice.call(s);
+	} catch (e) {
+		var arr = [];
+		for (var i = 0, len = s.length; i < len; i++) {
+			//arr.push(s[i]);
+			arr[i] = s[i];
+			//据说这样比push快
 		}
-	});
+		return arr;
+	}
+}
+$.appendArr = function(arr1, arr2) {
+	for (var i = 0; i < arr2.length; i++) {
+		arr1.push(arr2[i]);
+	}
+}
+//碰撞检测
+$.isTouched = function(obj1, obj2) {
+	var l = obj1.offsetLeft;
+	var lr = obj1.offsetLeft + obj1.offsetWidth;
+	var t = obj1.offsetTop;
+	var tb = obj1.offsetTop + obj1.offsetHeight;
 
-	apple.define('type',[],function(){
-		return {
-			isArray:function(arr){
-				return Object.prototype.toString.call(arr) === '[object Array]'
-			},
-			isString:function(obj){
-				return Object.prototype.toString.call(obj) === '[object String]'
-			},
-			isArrayLike : function(obj){
-				return obj.hasOwnProperty('length');
-			},
-			isObject:function(obj){
-				return typeof obj === 'object' ;
-			}
+	var l2 = obj2.offsetLeft;
+	var lr2 = obj2.offsetLeft + obj2.offsetWidth;
+	var t2 = obj2.offsetTop;
+	var tb2 = obj2.offsetTop + obj2.offsetHeight;
 
-		}
+	if (lr < l2 || l > lr2 || t > tb2 || tb < t2) {
+		return false;
+	} else {
+		return true;
+	}
+}
 
-	});
+$.extend = function(fname, fn) {
+	$[fname] = fn;
+}
+//*******************************************************
+//选择器
+//主体框架
+function desire(vArg) {
+	this.length = 0;
+	switch (typeof vArg) {
+		case 'function':
+			$.addEvent(window, 'load', vArg);
+			break;
+		case 'string':
+			switch (vArg.charAt(0)) {
+				case '#':
+					var temp = document.getElementById(vArg.substring(1));
+					if (temp) {
+						this.length++;
+						this[0] = temp;
+						break;
+					}
 
-	apple.define('event',['catch','tools'],function(Catch,tools){
-
-		return {
-			add:function(el,type,handle,name){
-				var events ,  /*事件类型*/
-					handles;  /*对应的综合处理函数*/
-				try{
-					events = Catch.data(el,'events') ;
-					handles = Catch.data(el,'handles') ;
-				}catch (e){
-					Catch.data(el,'events',{}); 
-					Catch.data(el,'handles',{}); 
-					events = Catch.data(el,'events');
-					handles = Catch.data(el,'handles');
-				}
-
-				events[type] ? events[type] : events[type] = [];
-
-				name ? events[type][name] = handle : 
-					events[type]['handle'+tools.getObjLength(events[type])];
-
-				/*只执行1次，循环处理所有的函数*/
-				if( !handles[type]){
-					handles[type] = function(){
-						for(var i in events[type]){
-							events[type][i].apply(el,arguments);
+				case '.':
+					var temp = $.getByClassName(document, vArg.substring(1))
+					if (temp.length > 0) {
+						for (var i = 0; i < temp.length; i++) {
+							this.length++;
+							this[i] = temp[i];
 						}
 					}
 
-					if(el.addEventListener){
-						el.addEventListener(type,handles[type],false);
-					}else if(el.attachEvent){
-						el.attachEvent('on'+type,function(){
-							handles[type].apply(el,arguments)
-						});
-					}else{
-						el['on'+type] = handles[type];
+					break;
+				default:
+					var temp = document.getElementsByTagName(vArg);
+					if (temp.length > 0) {
+						for (var i = 0; i < temp.length; i++) {
+							this.length++;
+							this[i] = temp[i];
+						}
 					}
-
+			}
+			break;
+		case 'object':
+			//可以是类数组
+			if (!vArg)
+				return;
+			if (vArg.length > 0) {
+				for (var i = 0; i < vArg.length; i++) {
+					this.length++;
+					this[i] = vArg[i];
 				}
-				
-			},
-			remove:function(){
+			} else {
+				this.length++;
+				this[0] = vArg;
+			}
+			break;
+	}
+}
 
+desire.fn = desire.prototype;
+
+//*******************************************************
+//函数扩展
+desire.fn.click = function(func) {
+	for (var i = 0; i < this.length; i++) {
+		$.addEvent(this[i], 'click', func);
+	}
+	return this;
+}
+desire.fn.hide = function() {
+	for (var i = 0; i < this.length; i++) {
+		this[i].style.display = 'none';
+	}
+	return this;
+}
+desire.fn.show = function() {
+	for (var i = 0; i < this.length; i++) {
+		this[i].style.display = 'block';
+	}
+	return this;
+}
+desire.fn.hover = function(fun1, fun2) {
+	if (arguments.length == 2) {
+		for (var i = 0; i < this.length; i++) {
+			$.addEvent(this[i], 'mouseover', fun1);
+			$.addEvent(this[i], 'mouseout', fun2);
+		}
+	} else {
+		for (var i = 0; i < this.length; i++) {
+			$.addEvent(this[i], 'mouseover', fun1);
+		}
+	}
+	return this;
+}
+desire.fn.css = function(key, value) {
+	//可以json设置css属性
+	if ( typeof arguments[0] == 'object' && arguments.length == 1) {
+		for (var i = 0; i < this.length; i++) {
+			for (var j in arguments[0]) {
+				this[i].style[j] = arguments[0][j];
 			}
 		}
-	});
+		return this;
+	}
+	//cssText设置css属性
+	else if (arguments[0].indexOf(':') != -1) {
+		for (var i = 0; i < this.length; i++) {
+			this[i].style.cssText += ";" + arguments[0];
+		}
+		return this;
+	}
 
-	apple.define('catch',[],function(){
+	//设置单一属性
+	if (arguments.length == 2) {
+		for (var i = 0; i < this.length; i++) {
+			this[i].style[key] = value;
+		}
+	}
+	//取单一属性
+	else {
+		var arr = $.getStyle(this[0], key);
+		//取属性
+		return arr;
+	}
+	return this;
+}
+//可作为切换点击事件 也可作为切换显隐
+desire.fn.toggle = function() {
+	var _args = arguments;
+	if (_args.length == 0) {
+		//切换所有元素状态
+		for (var i = 0; i < this.length; i++) {
+			var temp = $(this[i]);
+			temp.css('display') == 'block' ? temp.css('display', 'none') : temp.css('display', 'block');
+		}
+		return;
+	}
+	for (var i = 0; i < this.length; i++) {
+		inovke(this[i]);
+	}
 
-		return {
-			data:function(el,key,value){
-				if( value ){
-					 var expando = el.getAttribute('expando') || 'expando '+ new Date().toString();
-					 el.setAttribute('expando',expando);
+	function inovke(obj) {
+		var count = 0;
+		//闭包，为每个元素创建执行作用域
+		$.addEvent(obj, 'click', function() {
+			_args[count++ % _args.length].call(obj);
+		});
+	}
 
-					 catchs[expando] = catchs[expando] || {};
-					 catchs[expando][key] = value;
-				}else if( key && !value ){
-					var expando = el.getAttribute('expando');
-					if(!expando) throw new Error('the object no expando field , can not get data');
-					if(!catchs[expando][key]) throw new Error('no field -- ' + key);
+	return this;
+}
 
-					return catchs[expando][key]
+desire.fn.eq = function(n) {
+	return $(this[n]);
+}
 
-				}
-			},
-			removeDate:function(el,key){
-				if( !key ){
-					var expando = el.getAttribute('expando');
-					if(!expando) return;
-					el.removeAttribute('expando');
-					delete catchs[expando];
-				}else{
-					var expando = el.getAttribute('expando');
-					if(!expando) return;
-					delete catchs[expando][key];
-				}
+desire.fn.first = function() {
+	return $(this[0]);
+}
+
+desire.fn.last = function() {
+	return $(this[this.length - 1]);
+}
+
+desire.fn.siblings = function() {
+	var result = [];
+	var temp = this[0].parentNode.children;
+	var flag = true;
+	for (var i = 0; i < temp.length; i++) {
+		flag = true;
+		for (var j = 0; j < this.length; j++) {
+			if (temp[i] == this[j]) {
+				flag = false;
 			}
 		}
-	});
 
-	apple.define('query',['tools'],function(tools){
-
-		var regId = /^#\w+$/,
-			regClass = /^\.\w+$/,
-			regTag = /^\w+$/;
-
-		var getByClass = function(selector,context){
-			var selector = selector.substring(1),
-				els = context.getElementsByTagName('*'),
-				result = [];
-
-			tools.each(els,function(el,index){
-				var className = el.className.replace('\s+',' '),
-					classList = className.split(' ');
-				tools.contains(classList,selector) && result.push(el);
-			})
-			return result;
+		if (flag) {
+			result.push(temp[i]);
 		}
+	}
+	return $(result);
+}
 
-		return{
-			find:function(selector,context){
-				var context = context ? 
-					document.getElementById(context) :
-					document,
-					els = [];
+desire.fn.parent = function() {
+	var temp = this[0].parentNode;
+	return $(temp);
+}
 
-				regId.test(selector) ?
-					els.push(context.getElementById(selector.substring(1))) :
-					regClass.test(selector) ?
-						els = getByClass(selector,context) :
-						regTag.test(selector) ?
-							els = context.getElementsByTagName(selector) :
-							( els = new Error('find method no support the selector'));
+desire.fn.parents = function() {
+	var temp = this[0].parentNode;
+	return $(temp.parentNode.children);
+	//可以是类数组
+}
 
-				if(els instanceof Error) throw Error;
-				return els;
+desire.fn.find = function(str) {
+	var result = [];
+	for (var i = 0; i < this.length; i++) {
+		var obj = this[i];
+		switch (str.charAt(0)) {
+			case '.':
+				var temp = $.getByClassName(obj, str.substring(1))
+				$.appendArr(result, temp);
+				break;
+			default:
+				var temp = obj.getElementsByTagName(str);
+				$.appendArr(result, temp);
+		}
+	}
+	return $(result);
+}
+
+desire.fn.index = function() {
+	var temp = this[0].parentNode.children;
+	for (var i = 0; i < temp.length; i++) {
+		if (temp[i] == this[0]) {
+			return i;
+		}
+	}
+}
+
+desire.fn.attr = function(key, value) {
+	if (arguments.length == 2) {
+		for (var i = 0; i < this.length; i++) {
+			this[i].setAttribute(key, value);
+			//用[]无法设置自定义的属性
+		}
+	} else {
+		return this[0].getAttribute(key);
+		//用[]无法访问自定义的属性
+	}
+}
+
+desire.fn.each = function(fun) {
+	for (var i = 0; i < this.length; i++) {
+		fun.call(this[i], i);
+	}
+}
+
+desire.fn.bind = function(type, fn) {
+	for (var i = 0; i < this.length; i++) {
+		$.addEvent(this[i], type, fn);
+	}
+	return this;
+}
+
+desire.fn.animate = function(json, time, func) {
+	time = time || 20;
+	for (var i = 0; i < this.length; i++) {
+		var obj = this[i];
+		//清除定时器
+		clearInterval(obj.timer);
+		//设置定时器
+		obj.timer = setInterval(function() {
+			//得到当前位置
+			var isStop = true;
+			for (var atrr in json) {
+				var iNowPosition = null;
+				if (atrr == 'opacity') {
+					iNowPosition = parseInt(parseFloat($.getStyle(obj, atrr)) * 100);
+					//避免浮点数
+				} else {
+					iNowPosition = parseInt($.getStyle(obj, atrr));
+				}
+				//计算速度
+				var iSpeed = (json[atrr] - iNowPosition) / time;
+				iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+
+				//停止检查
+				if (iNowPosition != json[atrr]) {//当所有的都到达才停止
+					isStop = false;
+				} else {
+					isStop = true;
+				}
+
+				if (atrr == 'opacity') {
+					obj.style.filter = 'alpha:opacity(' + (iNowPosition + iSpeed) + ')';
+					obj.style.opacity = (iNowPosition + iSpeed) / 100;
+				} else {
+					obj.style[atrr] = iNowPosition + iSpeed + 'px';
+				}
 			}
+
+			if (isStop) {
+				clearInterval(obj.timer);
+				if (func) {
+					func();
+				}
+			}
+
+		}, 10)
+	}
+	return this;
+}
+//清除定时器
+desire.fn.stop = function(json, func) {
+	clearInterval(this[0].timer);
+	return this;
+}
+
+desire.fn.addClass = function(str) {
+	for (var i = 0; i < this.length; i++) {
+		$.addClass(this[i], str);
+	}
+	return this;
+}
+
+desire.fn.removeClass = function(str) {
+	for (var i = 0; i < this.length; i++) {
+		$.removeClass(this[i], str);
+	}
+	return this;
+}
+
+desire.fn.toggleClass = function(str) {
+	for (var i = 0; i < this.length; i++) {
+		if (this[i].className.indexOf(str) != -1) {
+			$.removeClass(this[i], str);
+		} else {
+			$.addClass(this[i], str);
 		}
-	});
+	}
+	return this;
+}
+//偶数个
+desire.fn.even = function() {
+	var result = [];
+	for (var i = 0; i < this.length; i++) {
+		if (i % 2 == 0) {
+			result.push(this[i]);
+		}
+	}
+	return $(result);
+}
+//奇数个
+desire.fn.odd = function() {
+	var result = [];
+	for (var i = 0; i < this.length; i++) {
+		if (i % 2 == 1) {
+			result.push(this[i]);
+		}
+	}
+	return $(result);
+}
 
-	apple.define('dom',[],function(){
+desire.fn.size = function() {
+	return this.length;
+}
 
-	})
+desire.fn.width = function() {
+	return this[0].offsetWidth;
+}
 
-	
-})(window,undefined)
+desire.fn.height = function() {
+	return this[0].offsetHeight;
+}
+
