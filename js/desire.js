@@ -102,7 +102,7 @@
 	window.requireCfg = apple.requireCfg;
 
 	/*----------------------------------------------------------------------核心模块定义*/
-	apple.define('desire',['query','tools','catch'],function(query,tools,Catch){
+	apple.define('desire',['query','tools','catch','event'],function(query,tools,Catch,Event){
 		var desire = function(selector,context){
 			return  new desire.fn.init(selector,context);
 		}
@@ -163,7 +163,7 @@
 			},
 
 			
-			/*  删除指定key 数据
+			/*  删除指定key 缓存数据
 			  	key为空 则删除该对象上的所有缓存数据 */
 			removeData:function(key){
 				if(key){
@@ -179,7 +179,34 @@
 
 
 			on:function(type,handle){
+				tools.each(this,function(el,index){
+					Event.add(el,type,handle);
+				})
 
+				return this;
+			},
+
+
+			off:function(type,handleName){
+				tools.each(this,function(el,index){
+					Event.remove(el,type,handleName);
+				})
+			},
+
+			trigger:function(type){
+				tools.each(this,function(el,index){
+					var evt = Event.createEvent('HTMLEvents',{
+								bubbles:true,
+								type:type,
+								cancelable:true
+								});
+
+					if(this.dispatchEvent){
+						this.dispatchEvent(evt);
+					}else if(this.fireEvent){
+						this.fireEvent(type,evt);
+					}
+				})
 			}
 		});
 
@@ -317,8 +344,6 @@
 							}
 						})
 				}
-
-
 			}
 		}
 	});
@@ -361,7 +386,7 @@
 				events[type] ? events[type] : events[type] = [];
 
 				name ? events[type][name] = handle : 
-					events[type]['handle'+tools.getObjLength(events[type])];
+					events[type]['handle'+tools.getObjLength(events[type])] = handle;
 
 				/*只执行1次，循环处理所有的函数*/
 				if( !handles[type]){
@@ -384,24 +409,78 @@
 				}
 				
 			},
-			remove:function(){
+			remove:function(el,type,handleName){
+				try{
+					var events = Catch.data(el,'events'),
+					handles = Catch.data(el,'handles');
+				}catch(e){
+					console.log(e);
+				}
 
+				if(handleName){
+					delete events[type][handleName]; return;	
+				}
+
+				el.removeEventListener ?
+					el.removeEventListener(type,handles[type],false) :
+				 	el.detachEvent ?
+						el.detachEvent('on'+type,handles[handleName]) :
+						el['on'+type] = null;
+
+				/*删除数据缓存*/
+				delete events[type];
+
+			},
+
+			/*evtType:dom标准事件类型
+				UIEvents：通用的UI 事件，鼠标事件键盘事件都是继承自UI事件，在DOM 3 级上使用的是 UIEvent。 
+			　　MouseEvents：通用的鼠标事件，在DOM 3 级上使用的是 MouseEvent。 
+			　　MutationEvents：通用的突变事件，在DOM 3 级上使用的是 MutationEvent。 
+			　　HTMLEvents：通用的HTML事件，在DOM3级上还没有等效的
+			  evtCfg:event参数
+			  	type,bubbles,cancelable 必填
+			*/
+			createEvent:function(evtType,evtCfg){
+				evtCfg = evtCfg || {};
+				var evt;
+
+				if(document.createEvent){
+					evt = document.createEvent(evtType);
+					evt.initEvent(evtCfg.type,evtCfg.bubbles,evtCfg.cancelable);
+/*?---event属性兼容*/
+					if(evtCfg['data']) evt['data'] = evtCfg['data'];
+
+				}else if(document.createEventObject){
+					evt = document.createEventObject();
+
+					if(evtCfg['data']) evt['data'] = data;
+				}
+
+				if(!evtCfg['type'] || !evtCfg['bubbles']  || !evtCfg['cancelable']){
+					throw new Error('event must have type,bubbles,cancelable field');
+				}else{
+					evt['type'] = evtCfg['type'];
+					evt['bubbles'] = evtCfg['bubbles'];
+					evt['cancelable'] = evtCfg['cancelable'];
+				}
+
+				return evt;
 			}
 		}
 	});
 
-	apple.define('catch',[],function(){
+	apple.define('catch',['navigator'],function(navigator){
 
 		return {
 			data:function(el,key,value){
 				if( value ){
-					 var expando = el.getAttribute('expando') || 'expando '+ new Date().toString();
-					 el.setAttribute('expando',expando);
+					 var expando = el['expando'] || 'expando '+ new Date().toString();
+					 el['expando'] = expando;
 
 					 catchs[expando] = catchs[expando] || {};
 					 catchs[expando][key] = value;
 				}else if( key && !value ){
-					var expando = el.getAttribute('expando');
+					var expando = el['expando'] ;
 					if(!expando) throw new Error('the object no expando field , can not get data');
 					if(!catchs[expando][key]) throw new Error('no field -- ' + key);
 
@@ -411,12 +490,17 @@
 			},
 			removeDate:function(el,key){
 				if( !key ){
-					var expando = el.getAttribute('expando');
+					var expando = el['expando'] ;
 					if(!expando) return;
-					el.removeAttribute('expando');
+
+					delete el['expando'] ;
+
+					/*ie 678 无法删除dom上的属性*/
+					!navigator.deleteExpando && el.removeAttribute('expando');
+					
 					delete catchs[expando];
 				}else{
-					var expando = el.getAttribute('expando');
+					var expando = el['expando'] ;
 					if(!expando) return;
 					delete catchs[expando][key];
 				}

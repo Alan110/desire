@@ -27,9 +27,10 @@
 		// console.log($('#div1'));
 		// $('#div1').data('name','hahah');
 		// alert($('#div1').data('name'))
-		// $('#div1').removeData('name');
+
+		// $('#div1').removeData();
 		// alert($('#div1').data('name'));
-		$('#div1').eq();
+		// $('#div1').eq();
 
 		// var aa  = {
 		// 	name1:{age:11},
@@ -51,6 +52,21 @@
 		// }
 
 		// alert(fun.name1);
+		$('#div1').on('abc',function(event){
+			alert(event.target);
+			alert('a');
+		}).trigger('abc');
+
+
+
+		// console.log(document.getElementById('div1'))
+
+
+	// document.getElementById('div1')['aaa'] = 'dd';
+	// console.log(document.getElementById('div1'));
+
+
+
 
 	})
 </script>
