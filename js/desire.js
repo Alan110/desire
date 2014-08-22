@@ -550,6 +550,27 @@
 
 	apple.define('dom',[],function(){
 
+	});
+
+	apple.define('Deferred',[],function(){
+
+		var deferred = function() {
+			this.events = [];
+			this.done = function(fuc){};
+			this.fail = function(fuc){};
+			this.then = function(done,fail){};
+			this.promise = function(){
+
+			};
+			this.resolve = function(){};
+			this.reject = function(){}
+		}
+
+		return {
+			Deferred:function(){
+				return new deferred();
+			}
+		}
 	})
 
 	
