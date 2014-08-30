@@ -344,6 +344,11 @@
 							}
 						})
 				}
+			},
+
+			/*类数组转换成数组*/
+			toArray:function(obj){
+				return Array.prototype.slice.call(obj);
 			}
 		}
 	});
@@ -424,7 +429,7 @@
 				el.removeEventListener ?
 					el.removeEventListener(type,handles[type],false) :
 				 	el.detachEvent ?
-						el.detachEvent('on'+type,handles[handleName]) :
+						el.detachEvent('on'+type,handles[type]) :
 						el['on'+type] = null;
 
 				/*删除数据缓存*/
@@ -553,24 +558,40 @@
 	});
 
 	apple.define('Deferred',[],function(){
-
-		var deferred = function() {
-			this.events = [];
-			this.done = function(fuc){};
-			this.fail = function(fuc){};
-			this.then = function(done,fail){};
-			this.promise = function(){
-
-			};
-			this.resolve = function(){};
-			this.reject = function(){}
+		var Queue = function(){
+			this.list = [];
 		}
 
-		return {
-			Deferred:function(){
-				return new deferred();
+		Queue.prototype = {
+			constructor:Queue,
+			then:function(fn){
+				this.list.push(fn);
+				return this;
+			},
+			wait:function(ms){
+				this.list.push(ms);
+				return this;
+			},
+			fire:function(){
+				var self = this,list = self.list;
+				var el = list.shift() || function(){};
+				if(typeof el == 'number'){
+					setTimeout(function(){
+						self.fire();
+					},el)
+				}else if(typeof el == 'function'){
+					el.call(this);
+					if(list.length){
+						self.fire();/*递归调用执行方法*/
+					}
+				}
 			}
 		}
+
+
+
+		return Queue;
+
 	})
 
 	

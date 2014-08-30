@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+</head>
+<body>
+	<div id="div1"></div>
+
+
+	<script type="text/javascript" src='../../js/desire.js'></script>
+	<script type="text/javascript">
+ 	require(['Deferred'],function(Deferred){
+
+ 		var div1 = document.getElementById('div1');
+ 		var queen = new Deferred();
+
+ 		queen.then(function(){
+ 			div1.innerHTML = 1;
+ 		})
+ 		.wait(1000)
+        .then(function(){
+          div1.innerHTML = 2
+        })
+        .wait(1000)
+        .then(function(){
+          div1.innerHTML = 3
+        })
+        .wait(1000)
+        .then(function(){
+          div1.innerHTML = 4
+        })
+        .wait(1000)
+        .then(function(){
+          div1.innerHTML = 5
+        })
+        .wait(1000)
+        .then(function(){
+          div1.innerHTML = 6
+        })
+        .wait(1000)
+        .then(function(){
+          div1.innerHTML = 7
+        })
+        .fire();
+
+    })
+        
+	</script>
+</body>
+</html>
