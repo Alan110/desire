@@ -14,11 +14,11 @@ function $(vArg) {
 //判断滑轮是否向下
 $.isWheelDown = function(event) {
 	return event.wheelDelta ? event.wheelDelta < 0 : event.detail > 0;
-}
+};
 
 $.isArray = function(obj) {
 	return Object.prototype.toString.call(obj) === '[object Array]';
-}
+};
 
 $.getCookie = function(c_name) {
 	if (document.cookie.length > 0) {
@@ -32,13 +32,13 @@ $.getCookie = function(c_name) {
 		}
 	}
 	return "";
-}
+};
 
 $.setCookie = function(c_name, value, expiredays) {
 	var exdate = new Date();
 	exdate.setDate(exdate.getDate() + expiredays);
-	document.cookie = c_name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString()) + ";path=/";
-}
+	document.cookie = c_name + "=" + escape(value) + ((expiredays === null) ? "" : ";expires=" + exdate.toGMTString()) + ";path=/";
+};
 
 $.getByClassName = function(obj, className) {
 	var eles = [];
@@ -51,23 +51,22 @@ $.getByClassName = function(obj, className) {
 				eles.push(obj1);
 			}
 		}
-
 	}
 	return eles;
-}
+};
 
 $.addEvent = function(obj, type, handle) {
 	if (obj.addEventListener) {
 		obj.addEventListener(type, function() {
-			if (false == handle.apply(obj, arguments)) {//由于使用了闭包，一定要传入所有的参数避免无法获取event对象
-				event.stopPropagation()//取消事件冒泡
+			if (false === handle.apply(obj, arguments)) {//由于使用了闭包，一定要传入所有的参数避免无法获取event对象
+				event.stopPropagation();//取消事件冒泡
 				event.preventDefault();
 				//标准 移除默认操作
 			}
 		}, false);
 	} else if (obj.attachEvent) {
 		obj.attachEvent('on' + type, function() {
-			if (false == handle.apply(obj, arguments)) {
+			if (false === handle.apply(obj, arguments)) {
 				window.event.cancelable = true;
 				return false;
 				// ie下移除默认操作
@@ -76,7 +75,7 @@ $.addEvent = function(obj, type, handle) {
 	} else {
 		obj['on' + type] = handle;
 	}
-}
+};
 
 $.getStyle = function(obj, arr) {
 	if (obj.currentStyle) {
@@ -84,20 +83,20 @@ $.getStyle = function(obj, arr) {
 	} else {
 		return getComputedStyle(obj, false)[arr];
 	}
-}
+};
 
 //必须用在obj.style.attr 之后，否则obj.style.attr设置的属性无效
 $.setCssText = function(obj,css){
-	obj.style.cssText += ";"+css
-}
+	obj.style.cssText += ";"+css;
+};
 
 $.addClass = function(obj, className) {
 	obj.className += ' ' + className;
-}
+};
 
 $.removeClass = function(obj, className) {
 	obj.className = obj.className.replace(' ' + className, '');
-}
+};
 //序列化json为查询字符串
 $._serialize = function(obj) {
 	var a = [];
@@ -110,7 +109,7 @@ $._serialize = function(obj) {
 		}
 	}
 	return a.join('&');
-}
+};
 //将有lenght属性的对象转换成数组
 $.toArray = function(s) {
 	try {
@@ -124,12 +123,12 @@ $.toArray = function(s) {
 		}
 		return arr;
 	}
-}
+};
 $.appendArr = function(arr1, arr2) {
 	for (var i = 0; i < arr2.length; i++) {
 		arr1.push(arr2[i]);
 	}
-}
+};
 //碰撞检测
 $.isTouched = function(obj1, obj2) {
 	var l = obj1.offsetLeft;
@@ -147,11 +146,11 @@ $.isTouched = function(obj1, obj2) {
 	} else {
 		return true;
 	}
-}
+};
 
 $.extend = function(fname, fn) {
 	$[fname] = fn;
-}
+};
 //*******************************************************
 //选择器
 //主体框架
@@ -169,10 +168,10 @@ function desire(vArg) {
 						this.length++;
 						this[0] = temp;
 						break;
-					}
+					}break;
 
 				case '.':
-					var temp = $.getByClassName(document, vArg.substring(1))
+					var temp = $.getByClassName(document, vArg.substring(1));
 					if (temp.length > 0) {
 						for (var i = 0; i < temp.length; i++) {
 							this.length++;
@@ -217,19 +216,19 @@ desire.fn.click = function(func) {
 		$.addEvent(this[i], 'click', func);
 	}
 	return this;
-}
+};
 desire.fn.hide = function() {
 	for (var i = 0; i < this.length; i++) {
 		this[i].style.display = 'none';
 	}
 	return this;
-}
+};
 desire.fn.show = function() {
 	for (var i = 0; i < this.length; i++) {
 		this[i].style.display = 'block';
 	}
 	return this;
-}
+};
 desire.fn.hover = function(fun1, fun2) {
 	if (arguments.length == 2) {
 		for (var i = 0; i < this.length; i++) {
@@ -242,7 +241,7 @@ desire.fn.hover = function(fun1, fun2) {
 		}
 	}
 	return this;
-}
+};
 desire.fn.css = function(key, value) {
 	//可以json设置css属性
 	if ( typeof arguments[0] == 'object' && arguments.length == 1) {
@@ -274,11 +273,11 @@ desire.fn.css = function(key, value) {
 		return arr;
 	}
 	return this;
-}
+};
 //可作为切换点击事件 也可作为切换显隐
 desire.fn.toggle = function() {
 	var _args = arguments;
-	if (_args.length == 0) {
+	if (_args.length === 0) {
 		//切换所有元素状态
 		for (var i = 0; i < this.length; i++) {
 			var temp = $(this[i]);
@@ -299,19 +298,19 @@ desire.fn.toggle = function() {
 	}
 
 	return this;
-}
+};
 
 desire.fn.eq = function(n) {
 	return $(this[n]);
-}
+};
 
 desire.fn.first = function() {
 	return $(this[0]);
-}
+};
 
 desire.fn.last = function() {
 	return $(this[this.length - 1]);
-}
+};
 
 desire.fn.siblings = function() {
 	var result = [];
@@ -330,18 +329,18 @@ desire.fn.siblings = function() {
 		}
 	}
 	return $(result);
-}
+};
 
 desire.fn.parent = function() {
 	var temp = this[0].parentNode;
 	return $(temp);
-}
+};
 
 desire.fn.parents = function() {
 	var temp = this[0].parentNode;
 	return $(temp.parentNode.children);
 	//可以是类数组
-}
+};
 
 desire.fn.find = function(str) {
 	var result = [];
@@ -349,7 +348,7 @@ desire.fn.find = function(str) {
 		var obj = this[i];
 		switch (str.charAt(0)) {
 			case '.':
-				var temp = $.getByClassName(obj, str.substring(1))
+				var temp = $.getByClassName(obj, str.substring(1));
 				$.appendArr(result, temp);
 				break;
 			default:
@@ -358,7 +357,7 @@ desire.fn.find = function(str) {
 		}
 	}
 	return $(result);
-}
+};
 
 desire.fn.index = function() {
 	var temp = this[0].parentNode.children;
@@ -367,7 +366,7 @@ desire.fn.index = function() {
 			return i;
 		}
 	}
-}
+};
 
 desire.fn.attr = function(key, value) {
 	if (arguments.length == 2) {
@@ -379,20 +378,20 @@ desire.fn.attr = function(key, value) {
 		return this[0].getAttribute(key);
 		//用[]无法访问自定义的属性
 	}
-}
+};
 
 desire.fn.each = function(fun) {
 	for (var i = 0; i < this.length; i++) {
 		fun.call(this[i], i);
 	}
-}
+};
 
 desire.fn.bind = function(type, fn) {
 	for (var i = 0; i < this.length; i++) {
 		$.addEvent(this[i], type, fn);
 	}
 	return this;
-}
+};
 
 desire.fn.animate = function(json, time, func) {
 	time = time || 20;
@@ -438,29 +437,29 @@ desire.fn.animate = function(json, time, func) {
 				}
 			}
 
-		}, 10)
+		}, 10);
 	}
 	return this;
-}
+};
 //清除定时器
 desire.fn.stop = function(json, func) {
 	clearInterval(this[0].timer);
 	return this;
-}
+};
 
 desire.fn.addClass = function(str) {
 	for (var i = 0; i < this.length; i++) {
 		$.addClass(this[i], str);
 	}
 	return this;
-}
+};
 
 desire.fn.removeClass = function(str) {
 	for (var i = 0; i < this.length; i++) {
 		$.removeClass(this[i], str);
 	}
 	return this;
-}
+};
 
 desire.fn.toggleClass = function(str) {
 	for (var i = 0; i < this.length; i++) {
@@ -471,17 +470,17 @@ desire.fn.toggleClass = function(str) {
 		}
 	}
 	return this;
-}
+};
 //偶数个
 desire.fn.even = function() {
 	var result = [];
 	for (var i = 0; i < this.length; i++) {
-		if (i % 2 == 0) {
+		if (i % 2 === 0) {
 			result.push(this[i]);
 		}
 	}
 	return $(result);
-}
+};
 //奇数个
 desire.fn.odd = function() {
 	var result = [];
@@ -491,17 +490,17 @@ desire.fn.odd = function() {
 		}
 	}
 	return $(result);
-}
+};
 
 desire.fn.size = function() {
 	return this.length;
-}
+};
 
 desire.fn.width = function() {
 	return this[0].offsetWidth;
-}
+};
 
 desire.fn.height = function() {
 	return this[0].offsetHeight;
-}
+};
 
