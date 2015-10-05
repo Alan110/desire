@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<style data-merge>
+		.tg{
+			width:  100px;
+			height: 100px;
+			background-color:red;
+		}
+	</style>
+</head>
+<body>
+	<input type="BUTTON" value="btn" class="btn" name="user">		
+	<div class="tg"></div>
+	<script src="./toggle.js"></script>
+	<script>
+
+//可手动触发调用trigger函数
+var t1 = new toggle([function(){
+	console.log(1);
+},function(){
+	console.log(2);
+},function(){
+	console.log(3);
+}]);
+
+
+//可点击可事件触发
+var t2 = new toggle(".tg",[function(){
+	console.log(1);
+},function(){
+	console.log(2);
+},function(){
+	console.log(3);
+}]);
+	
+	</script>
+</body>
+</html>
+
+
+
+
