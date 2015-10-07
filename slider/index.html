@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title></title>
+    <style>
+	*{
+		margin: 0;
+		padding:0;
+	}
+	.wa-tujie-scrollor{
+		overflow:hidden;
+		position:relative;
+	}
+
+	.wa-tujie-scrollor ul{
+		width: 500%;
+		height:147px;
+		position:relative;
+	}
+	.wa-tujie-scrollor li{
+		width: 100%;
+		height:147px;
+		display:inline-block;
+		position:absolute;
+		top:0;
+		left:0;
+	}
+
+	.wa-tujie-scrollor li:nth-of-type(1){
+		background-color:red;
+	}
+	.wa-tujie-scrollor li:nth-of-type(2){
+		background-color:blue;
+	}
+	.wa-tujie-scrollor li:nth-of-type(3){
+		background-color:yellow;
+	}
+	.wa-tujie-scrollor li:nth-of-type(4){
+		background-color:#333;
+		border:#444;
+	}
+	.wa-tujie-scrollor li:nth-of-type(5){
+		background-color:#324333;
+	}
+	.wa-tujie-scrollor li:nth-of-type(6){
+		background-color:red;
+	}
+	.wa-tujie-info{
+		position:absolute;
+		width:100%;
+		bottom:0;
+		right:0;
+		background-color:rgba(0,0,0,0.6);
+		height:27px;
+		line-height:27px;
+		z-index:100;
+	}
+	.wa-tujie-info div{
+		display:inline-block;	
+	}
+	.wa-tujie-dots{
+		position:absolute;
+		right:0;
+		bottom:0;
+		margin-right:9px;
+	}
+	.wa-tujie-info .wa-tujie-dots-focus{
+		background-color:#dddfdf;
+	}
+	.wa-tujie-info li{
+		display:inline-block;
+		-webkit-border-radius:50%;
+		border-radius:50%;
+		background-color:#9d9692;
+		margin-right:7px;
+		width:6px;
+		height:6px;
+	}
+	.wa-tujie-text{
+		color:#fff;
+		margin-left:20px;
+	}
+	.wa-tujie-wrapper{
+		position: relative;
+	}
+
+	</style>
+</head>
+<body>
+	<div class="c-gap-top wa-tujie-wrapper">
+		<div class="wa-tujie-scrollor">
+			<ul>
+				<li data-index="1"></li>
+				<li data-index="2"></li>
+				<li data-index="3"></li>
+				<li data-index="4"></li>
+				<li data-index="5"></li>
+			</ul>
+		</div>
+		<div class="wa-tujie-info">
+			<div class="wa-tujie-text">花千骨</div>
+			<div class="wa-tujie-dots">
+				<li class="wa-tujie-dots-focus"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</div>
+		</div>
+	</div>
+
+	<script src="slider.js"></script>
+</body>
+</html>
