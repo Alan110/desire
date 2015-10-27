@@ -2,10 +2,10 @@ var swipe = function(obj,cfg){
 	var base = {
 		min_move_x: 20,
 		min_move_y: 20,
-		wipeLeft: function() {},
-		wipeRight: function() {},
-		wipeUp: function() {},
-		wipeDown: function() {},
+		swipeLeft: function() {},
+		swipeRight: function() {},
+		swipeUp: function() {},
+		swipeDown: function() {},
 		preventDefaultEvents: true
 	};
 
@@ -20,10 +20,12 @@ var swipe = function(obj,cfg){
 		startTy = touches.clientY;
 		isTouchMove = false;
 	},false);
+
 	obj.addEventListener( 'touchmove', function( e ){
 		isTouchMove = true;
 		cfg.preventDefaultEvents && e.preventDefault();
 	},false);
+
 	obj.addEventListener('touchend', function( e ){
 		if( !isTouchMove ){return; }
 
@@ -34,13 +36,19 @@ var swipe = function(obj,cfg){
 		distanceY = startTy - endTy,
 		isSwipe = false;
 		if( Math.abs(distanceX) >= Math.abs(distanceY) ){
+			if( distanceX > base.min_move_X){
+				base.swipeRight();
+			}
+			else if( distanceY < (-1) * base.min_move_y ){
+				base.swipeLeft();
+			}
 		}
 		else{
 			if( distanceY > base.min_move_y){
-				base.wipeUp();
+				base.swipeUp();
 			}
 			else if( distanceY < (-1) * base.min_move_y ){
-				base.wipeDown();
+				base.swipeDown();
 			}
 		}
 

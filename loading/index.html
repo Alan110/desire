@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title></title>
+<style>
+
+@-webkit-keyframes rotating{
+	0%{
+		-webkit-transform:rotate(0deg)
+	}
+	100%{
+		-webkit-transform:rotate(360deg)
+	}
+}
+	.ico-rotate{
+		border:2px solid #e2e2e2;	
+		border-left:2px solid #598edc;
+		width:40px;
+		height:40px;
+		-webkit-border-radius:50em;
+		border-radius:50em;
+
+		/* 可调整贝尔曲线,不同的动画效果,在chrome中点击贝尔曲线图标可以预览效果 */	
+		-webkit-animation:rotating 700ms linear infinite;
+		display:inline-block;
+	}
+</style>
+</head>
+<body>
+	<span class="ico-rotate"></span>
+</body>
+</html>
