@@ -57,17 +57,15 @@ var zhexiantu = (function(window,undefined){
 	function _countUnitxy(points){
 		var cfg = this.cfg;
 
-		var max_y = points.reduce(function(max,item){
-			return item.y > max ? item.y : max;	
-		},0);
-
-		var max_x = points.reduce(function(max,item){
-			return item.x > max ? item.x : max;	
-		},0);
+		var max = points.reduce(function(max,item){
+			max.y =  item.y > max.y ? item.y : max.y;	
+			max.x =  item.x > max.x ? item.x : max.x;	
+			return max;
+		},{x:0,y:0});
 
 		return {
-			x: Math.ceil(max_x/1000/cfg.xlen)*1000,
-			y: Math.ceil(max_y/1000/cfg.ylen)*1000
+			x: Math.ceil(max.x/1000/cfg.xlen)*1000,
+			y: Math.ceil(max.y/1000/cfg.ylen)*1000
 		};
 	}
 
@@ -156,7 +154,7 @@ var zhexiantu = (function(window,undefined){
 		_canvasSetup.call(this);
 		_drawTable.call(this);
 
-
+		//drawLine
 		this.cfg.lines.forEach(function(el,index){
 			el.beforeDraw.call(null,self.ctx);
 			self.drawLine(el.points);
