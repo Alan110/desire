@@ -11,7 +11,9 @@ var zhexiantu = (function(window,undefined){
 		ylen:3,//Y轴点个数
 		unitHeight:38,//css单元高度,写死
 		unitWidth:50,//css单元宽度,动态计算
-		startX:30,//X轴0点到原点的偏移量
+		startX:0,//X轴0点到原点的偏移量
+		tableXstr:'',//x轴表头字符串
+		afterDraw:null,//画完之后执行回调,ctx为默认参数
 		lines:[],//折线
 
 		//相对于正常坐标系
@@ -134,10 +136,12 @@ var zhexiantu = (function(window,undefined){
 		}
 
 		/*画表头*/
-		ctx.beginPath();
-		ctx.moveTo(0,0);
-		ctx.fillText("经验(年)",13,cfg.offsetKeduY);
-		ctx.stroke();
+		if(cfg.tableXstr !== ''){
+			ctx.beginPath();
+			ctx.moveTo(0,0);
+			ctx.fillText(cfg.tableXstr,13,cfg.offsetKeduY);
+			ctx.stroke();
+		}
 
 		/*画刻度*/
 		ctx.textAlign = "center";
@@ -172,6 +176,8 @@ var zhexiantu = (function(window,undefined){
 			el.beforeDraw.call(null,self.ctx);
 			self.drawLine(el.points);
 		});
+
+		typeof this.cfg.afterDraw === "function" && this.cfg.afterDraw.call(null,this.cfg.ctx);
 	
 	};
 
@@ -205,6 +211,14 @@ var zhexiantu = (function(window,undefined){
 
 
 var z1 = new zhexiantu("#wa-jiaoyu-canvas",{
+	xlen:5,
+	ylen:3,
+	unitHeight:38,
+	startX:30,
+	afterDraw:function(ctx){
+		alert("a")	;
+	},
+	tableXstr:"经验(年)",
 	lines:[
 		{
 			beforeDraw:function(ctx){
