@@ -1,27 +1,36 @@
 
 var zhexiantu = (function(window,undefined){
 
-	/*默认配置*/
+	/*默认配置
+	 *配置参数以css像素为准,会统一根据比例转换为物理像素
+	 * */
 	var cfg = {
-		xUnit:1,
-		yUnit:5000,
-		xlen:5,
-		ylen:3,
-		unitHeight:38,
-		unitWidth:50,
-		startX:30,
-		tScale: window.devicePixelRatio,
-		lineWidth:1,
-		fontPaddingRight:10,
-		nbPaddingtop:15,
-		kefduHeight:2,
-		fontSize:14,
-		pointR : 3,
+		xUnit:1,//逻辑单元宽度 ,动态计算
+		yUnit:5000,//逻辑单元高度 ,动态计算
+		xlen:5,//X轴点个数
+		ylen:3,//Y轴点个数
+		unitHeight:38,//css单元高度,写死
+		unitWidth:50,//css单元宽度,动态计算
+		startX:30,//X轴0点到原点的偏移量
+		lines:[],//折线
+
+		//相对于正常坐标系
+		offsetX:47,//X轴偏移量
+		offsetY:23,//Y轴偏移量
+
+		tScale: window.devicePixelRatio,//物理像素与css的比例
+		offsetKeduX:10,//左侧刻度与Y轴的偏移量
+		offsetKeduY:15,//下侧刻度与X轴的偏移量
+
+		lineWidth:1,//线条默认宽度
+		keduHeight:2,//刻度高度
+		fontSize:14,//刻度字体大小
+		pointR : 3,//线条上点的半径
 	};
 
-	/*且静态方法,不依赖任何对象,所有数据从参数传递*/
+/*******************************************************************静态方法,不依赖任何对象,所有数据从参数传递*/
 	/*
-	 * 平移坐标系后,坐标是相对于平移之后的坐标系,可能坐标不在画布中了,需要一个变换函数,来生成新的物理坐标
+	 * 平移坐标系后,坐标是相对于平移之后的坐标系,可能坐标不在画布中了,需要一个变换函数,来生成新的物理坐标,所有的坐标,和坐标轴变换都要通过变换函数处理
 	 * */
 	function _translateY(x){
 		return 	(-1) * (x + 1);
@@ -36,12 +45,14 @@ var zhexiantu = (function(window,undefined){
 		return _config;
 	};
 
-	/*私有方法,依赖对象*/
+/*****************************************************************私有方法,依赖对象*/
+
+	/*根据物理像素与css像素比例缩放*/
 	function _scale(value){
 		return value * this.cfg.tScale;	
 	}
 
-	/*计算根据逻辑坐标计算物理坐标*/
+	/*计算根据逻辑坐标,css坐标计算物理坐标*/
 	function _getPosition(item){
 		var cfg = this.cfg;
 		var x = item.x * cfg.unitWidth + cfg.startX;
@@ -52,8 +63,7 @@ var zhexiantu = (function(window,undefined){
 		};
 	}
 
-	
-	/*计算单位x,y*/
+	/*计算逻辑坐标单位x,y*/
 	function _countUnitxy(points){
 		var cfg = this.cfg;
 
@@ -73,16 +83,18 @@ var zhexiantu = (function(window,undefined){
 		var canvas = this.canvas,
 			ctx = this.ctx,
 			temp = _scale.bind(this);
+			cfg = this.cfg,
+			self = this,
 			_scale = temp;
 
 		this.canvas.width = _scale(canvas.offsetWidth);
 		this.canvas.height = _scale(canvas.offsetHeight);
-		["nbPaddingtop","kefduHeight","pointR","unitHeight","startX","fontSize","fontPaddingRight"].forEach(function(el,index){
-			cfg[el] = _scale(cfg[el]);
+		["offsetKeduY","keduHeight","offsetX","offsetY","pointR","unitHeight","startX","fontSize","offsetKeduX"].forEach(function(el,index){
+			self.cfg[el] = _scale(cfg[el]);
 		});
 		this.cfg.unitWidth = ( canvas.width - 2 * cfg.startX ) / cfg.xlen;
 		
-		var points = this.cfg.lines.reduce(function(sum,el){
+		var points = cfg.lines.reduce(function(sum,el){
 			return sum.concat(el.points);
 		},[]);
 
@@ -91,12 +103,13 @@ var zhexiantu = (function(window,undefined){
 		this.cfg.yUnit = unit.y;
 
 		/*平移到常规坐标系*/
-		this.ctx.translate(_scale(47),canvas.height - _scale(23));		
+		ctx.translate(cfg.offsetX,canvas.height + _translateY(cfg.offsetY));		
 
-		this.ctx.textAlign = "end";
-		this.ctx.textBaseline = "middle";
-		this.ctx.font = cfg.fontSize + "px" + " Arial, Helvetica, sans-serif lighter";
-		this.ctx.lineWidth = _scale(cfg.lineWidth);
+		/*默认画笔样式*/
+		ctx.textAlign = "end";
+		ctx.textBaseline = "middle";
+		ctx.font = cfg.fontSize + "px" + " Arial, Helvetica, sans-serif lighter";
+		ctx.lineWidth = _scale(cfg.lineWidth);
 
 	} 
 
@@ -114,7 +127,7 @@ var zhexiantu = (function(window,undefined){
 			ctx.lineTo(canvas.width,y);
 
 			if(i !== 0){
-				ctx.fillText(i * cfg.yUnit,(-1) * cfg.fontPaddingRight,y);
+				ctx.fillText(i * cfg.yUnit,(-1) * cfg.offsetKeduX,y);
 			}
 			ctx.closePath();
 			ctx.stroke();
@@ -123,7 +136,7 @@ var zhexiantu = (function(window,undefined){
 		/*画表头*/
 		ctx.beginPath();
 		ctx.moveTo(0,0);
-		ctx.fillText("经验(年)",13,cfg.nbPaddingtop);
+		ctx.fillText("经验(年)",13,cfg.offsetKeduY);
 		ctx.stroke();
 
 		/*画刻度*/
@@ -131,11 +144,11 @@ var zhexiantu = (function(window,undefined){
 		for(var i = 0;i<cfg.xlen;i++){
 			ctx.beginPath();
 			var x = i * cfg.unitWidth + cfg.startX; 
-			ctx.moveTo(x,_translateY(cfg.kefduHeight + 2));
-			ctx.lineTo(x,cfg.kefduHeight);	
+			ctx.moveTo(x,_translateY(cfg.keduHeight + 2));
+			ctx.lineTo(x,cfg.keduHeight);	
 
 			ctx.moveTo(x,0);
-			ctx.fillText(i,x,cfg.nbPaddingtop);
+			ctx.fillText(i,x,cfg.offsetKeduY);
 			ctx.stroke();
 		}
 	}
