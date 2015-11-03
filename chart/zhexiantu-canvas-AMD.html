@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title></title>
+<style>
+	.wa-jiaoyu-canvas{
+		width:100%;
+		height: 150px;
+	}
+</style>
+</head>
+<body>
+	<div class="wa-jiaoyu-canvas"></div>
+	<script src="http://ws.baidu.com/content/wiki/grid/gridwiki/js/esl.js"></script>
+	<script>
+	require.config({
+		paths:{
+			'uiamd':'http://m.baidu.com/static/ala/uiamd'
+		}	
+	
+	});	
+	</script>
+	<script>
+		require(['uiamd/zxt'],function(zxt){
+			var z1 = new zxt(".wa-jiaoyu-canvas",{
+				xlen:5,
+				ylen:3,
+				unitHeight:38,
+				startX:30,
+				beforeDraw:function(){
+					console.log("开始绘制");
+				},
+				afterDraw:function(){
+					console.log("结束绘制");
+				},
+				tableXstr:"经验(年)",
+				lines:[
+					{
+						beforeDraw:function(ctx){
+							ctx.strokeStyle = "#ff6600";
+							ctx.fillStyle = "#ff6600"; 
+						},
+						points:	[ { x:0, y:3999 }, { x:1, y:4782 }, { x:2, y:7000 }, { x:3, y:8888 }, { x:4, y:13239 }, { x:5, y:15000 } ]
+					},
+					{ 
+						beforeDraw:function(ctx){
+							ctx.strokeStyle = "#1f91ff";
+							ctx.fillStyle = "#1f91ff"; 
+						},
+						points:[ { x:0, y:2999 }, { x:1, y:3782 }, { x:2, y:6000 }, { x:3, y:7888 }, { x:4, y:10239 }, { x:5, y:14000 } ]
+					}	
+				]
+				
+			});
+		});
+	
+	
+	</script>
+
+</body>
+</html>

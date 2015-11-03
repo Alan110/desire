@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title></title>
+<style>
+
+*{
+	margin:0;
+	padding:0;
+}
+body{
+	padding:5px;
+}
+
+h1{
+	background-color:#84a1c1;
+	color:#fff;
+	font-size:20px;
+	padding:5px;
+	margin:10px 0;
+}
+
+h2{
+	color:#000;
+	font-size:15px;
+	margin:15px 0;
+}
+p{
+	margin:3px;
+}
+
+.note{
+	color:red;
+	font-weight:bold;
+}
+
+li{
+	padding:5px 0;
+}
+
+</style>
+</head>
+<body>
+	<h1>flex</h1>	
+	<style>
+
+	.wrap{
+		display:-webkit-box;
+		display:-webkit-flex;
+		display:flex;
+		justify-content:space-between;
+	}
+
+	.wrap div{
+		display:inline-block;
+	}
+	</style>
+
+	<p>
+		<li>justify-content:space-between <span class="note">如何排列剩余的空间</span></li>
+		<li> display:-webkit-flex; <span class="note">只要设置这个,内部的元素都会变成行内元素</span></li>
+		<li> -webkit-box-flex:1;  <span class="note">设置等分属性,会按剩余宽度来进行比例分配,不一定要写</span></li>
+	</p>
+
+	<h2>等间距水平排列</h2>
+	<p>
+		<div class="wrap">
+			<div style="background-color:yellow;">
+				fdsfdsfsdfs
+			</div>
+			<div class="" style="background-color:yellow;">
+				放假啦SD卡附近的说了句
+			</div>
+			<div class="" style="background-color:yellow;">
+				放假啦SD卡附近的说了句
+			</div>
+			<div class="" style="background-color:yellow;">
+				放假啦SD卡附近的说了句
+			</div>
+
+		</div>
+	</p>
+
+
+	<h2>截断</h2>
+	<p>
+		<li>多行截断需要配合弹性盒子模型,-webkit-line-clamp并不是标准,适合在webkit浏览器上使用</li>
+	</p>	
+	<style>
+		.line-clamp1{
+			overflow:hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			background-color: yellow;
+		}	
+		.line-clamp3{
+			-webkit-line-clamp:3;
+			display:-webkit-box;
+			-webkit-box-orient:vertical;
+			overflow:hidden;
+			text-overflow: ellipsis;
+			background-color: green;
+		}	
+	
+	</style>
+	<p>
+		<div class="line-clamp1" style="width:100px;">
+			我是单行截断我是单行截断我是单行截断我是单行截断我是单行截断我是单行截断我是单行截断	
+		</div>					
+		<div class="line-clamp3" style="width:200px;">
+			我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断
+		</div>					
+	</p>
+</body>
+</html>

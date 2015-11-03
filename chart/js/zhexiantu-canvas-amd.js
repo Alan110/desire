@@ -1,6 +1,4 @@
-
-var zhexiantu = (function(window,undefined){
-
+define(function(){
 	/*默认配置
 	 *配置参数以css像素为准,会统一根据比例转换为物理像素
 	 * */
@@ -92,14 +90,17 @@ var zhexiantu = (function(window,undefined){
 
 	function _canvasSetup(){
 		var canvas = this.canvas,
+			canvasWraper = this.canvasWraper,
 			ctx = this.ctx,
 			temp = _scale.bind(this);
 			cfg = this.cfg,
 			self = this,
 			_scale = temp;
 
-		this.canvas.width = _scale(canvas.offsetWidth);
-		this.canvas.height = _scale(canvas.offsetHeight);
+		this.canvas.width = _scale(canvasWraper.offsetWidth);
+		this.canvas.height = _scale(canvasWraper.offsetHeight);
+		this.canvas.style.cssText = "width:100%;height:100%;";
+
 		["offsetKeduY","keduHeight","offsetX","offsetY","pointR","unitHeight","startX","fontSize","offsetKeduX"].forEach(function(el,index){
 			self.cfg[el] = _scale(cfg[el]);
 		});
@@ -169,7 +170,8 @@ var zhexiantu = (function(window,undefined){
 
 	/*构造函数*/
 	var init = function(objstr,option){
-		this.canvas = document.querySelector(objstr);
+		this.canvasWraper = document.querySelector(objstr);
+		this.canvas = document.createElement("canvas");
 		this.ctx = this.canvas.getContext("2d");
 
 		var user_cfg = _setup(option),
@@ -189,8 +191,11 @@ var zhexiantu = (function(window,undefined){
 			self.drawLine(el.points);
 		});
 
+
+		this.canvasWraper.appendChild(this.canvas);
+
 		typeof this.cfg.afterDraw === "function" && this.cfg.afterDraw.call(this);
-	
+
 	};
 
 	/*公共方法*/
@@ -218,6 +223,6 @@ var zhexiantu = (function(window,undefined){
 
 	return init;
 
-})(window,undefined);
+});
 
 
