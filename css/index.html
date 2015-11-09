@@ -3,43 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <title></title>
-<style>
-
-*{
-	margin:0;
-	padding:0;
-}
-body{
-	padding:5px;
-}
-
-h1{
-	background-color:#84a1c1;
-	color:#fff;
-	font-size:20px;
-	padding:5px;
-	margin:10px 0;
-}
-
-h2{
-	color:#000;
-	font-size:15px;
-	margin:15px 0;
-}
-p{
-	margin:3px;
-}
-
-.note{
-	color:red;
-	font-weight:bold;
-}
-
-li{
-	padding:5px 0;
-}
-
-</style>
+<link rel="stylesheet" href="base.css" type="text/css" media="screen" charset="utf-8">
 </head>
 <body>
 	<h1>flex</h1>	
@@ -52,19 +16,17 @@ li{
 		justify-content:space-between;
 	}
 
-	.wrap div{
-		display:inline-block;
-	}
 	</style>
 
-	<p>
-		<li>justify-content:space-between <span class="note">如何排列剩余的空间</span></li>
-		<li> display:-webkit-flex; <span class="note">只要设置这个,内部的元素都会变成行内元素</span></li>
-		<li> -webkit-box-flex:1;  <span class="note">设置等分属性,会按剩余宽度来进行比例分配,不一定要写</span></li>
-	</p>
+	<row>
+		<li>justify-content:space-between <span class="c-red">水平方向上如何排列剩余的空间</span></li>
+		<li> display:-webkit-flex; <span class="c-red">只要设置这个,内部的元素都会变成行内元素</span></li>
+		<li> -webkit-box-flex:1;  <span class="c-red">设置等分属性,会按剩余宽度来进行比例分配,不一定要写</span></li>
+		<li> -webkit-align-items:center; <span class="c-red">items属性设置子元素在垂直方向上如何放置</span></li>
+	</row>
 
 	<h2>等间距水平排列</h2>
-	<p>
+	<row>
 		<div class="wrap">
 			<div style="background-color:yellow;">
 				fdsfdsfsdfs
@@ -80,13 +42,16 @@ li{
 			</div>
 
 		</div>
-	</p>
+	</row>
 
 
-	<h2>截断</h2>
-	<p>
+	<h1>截断</h1>
+	<row>
+		<li>单行截断需要依赖于宽度</li>
+		<li>截断class可以写到富容器上</li>
 		<li>多行截断需要配合弹性盒子模型,-webkit-line-clamp并不是标准,适合在webkit浏览器上使用</li>
-	</p>	
+		<li>内部子标签尽量别有inline-block 属性 ,可能无法截断</li>
+	</row>	
 	<style>
 		.line-clamp1{
 			overflow:hidden;
@@ -104,13 +69,50 @@ li{
 		}	
 	
 	</style>
-	<p>
-		<div class="line-clamp1" style="width:100px;">
-			我是单行截断我是单行截断我是单行截断我是单行截断我是单行截断我是单行截断我是单行截断	
+	<row>
+		<div class="line-clamp1" style="width:200px;">
+			我是单行截断我是单行截断我是单行截断我是单行<span>截断我是单行截断我是单行截断我是单行截断	</span>
 		</div>					
 		<div class="line-clamp3" style="width:200px;">
 			我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断我是多行截断
 		</div>					
-	</p>
+	</row>
+
+	<h1>垂直居中</h1>
+	<h2>子元素自适应宽高垂直居中</h2>
+	<style>
+		.parent{
+			height:100px;
+			text-align:center;
+		}
+		.parent::after{
+			content:'';
+			vertical-align:middle;
+			width:0;
+			height:100%;
+			display:inline-block;
+		}
+		.child{
+		display:inline-block;
+			vertical-align:middle;
+		}
+
+		.parent-flex{
+			height:100px;
+			display:-webkit-box;	
+			display:-webkit-flex;
+			display:flex;
+			-webkit-align-items:center;
+			justify-content:center;
+		}
+	</style>
+	<row class="parent b-green">
+		<div class="child">我是inline-block实现的!!! </div>	
+	</row>
+	<row class="parent-flex b-yellow">
+		<div>
+			我是flex实现的!!!
+		</div>	
+	</row>
 </body>
 </html>
