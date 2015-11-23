@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="transition.js"></script>
+	<script type="text/javascript">
+		window.onload = function(){
+		document.querySelector("#u1").onmouseover = function(){
+			t('#u1').set({
+				width:'150px',
+				height:'300px',
+			}).during(1000).fire();
+		}
+		}
+	</script>
+	<style>
+		#u1{
+			transform-origin:50%,50%,0;
+			width:100px;
+			height:100px;
+			background-color:yellow;
+		}
+		.u2{
+			margin-left:0;
+			margin-right:0;
+			height:50px;
+			background-color:red;
+		}
+	</style>
+	<title></title>
+</head>
+<body style="padding:100px;">
+	<div id="u1">
+		<div class="u2">
+
+		</div>	
+	</div>	
+</body>
+

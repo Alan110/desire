@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title></title>
+<script src="index.js"></script>
+</head>
+<body>
+
+<script class="tpl" type="text/html">
+
+<% for(var i=0;i<data.names.length; i++){ %>
+	<div class="name"><%=data.names[i] %></div>
+<% } %>
+
+</script>
+
+<script>
+	var str = tplRender.getCode({names:['xxx','eee','fef']},'.tpl');
+	console.log(str);
+	alert(str);
+</script>
+</body>
+</html>

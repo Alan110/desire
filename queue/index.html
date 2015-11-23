@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title></title>
+<script src="index.js"></script>
+</head>
+<body>
+
+<script>
+ q(function(){
+	console.log("aa");
+	this.next();
+}).wait(2000).then(function(){
+	console.log("bb")
+	this.next();
+}).start();
+</script>
+</body>
+
+</html>

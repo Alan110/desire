@@ -1,0 +1,52 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <meta charset="utf-8"> 
+    <title>dom Framework</title> 
+  <script> 
+      var dom = function(s){ 
+        return document.getElementById(s) 
+      } 
+      dom.cssName = function (name){ 
+        var prefixes = ['', '-ms-','-moz-', '-webkit-', '-khtml-', '-o-'], 
+        rcap = /-([a-z])/g,capfn = function($0,$1){ 
+          return $1.toUpperCase(); 
+        }; 
+        dom.cssName = function(name, target, test){ 
+          target = target || document.documentElement.style; 
+          for (var i=0, l=prefixes.length; i < l; i++) { 
+            test = (prefixes[i] + name).replace(rcap,capfn); 
+            if(test in target){ 
+              return test; 
+            } 
+          } 
+          return null; 
+        } 
+        return dom.cssName(name); 
+      } 
+      window.onload = function(){ 
+        var el = dom("test"), 
+        css3transition = dom.cssName("transition"); 
+        el.style[css3transition] = "all 5s ease-in" 
+        dom("start").onclick = function(){ 
+          el.style.width = "400px"; 
+        } 
+      } 
+    
+    </script> 
+    <style> 
+      #test{ 
+        background: red; 
+        width:10px; 
+        height:30px; 
+      } 
+    </style> 
+  </head> 
+  <body> 
+    <h3>CSS3 动画 by 司徒正美</h3> 
+    <div id="test"> 
+      TEXT 
+    </div> 
+    <button id="start" type="button">开始测试</button> 
+  </body> 
+</html> 
