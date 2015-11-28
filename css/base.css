@@ -27,6 +27,10 @@ row{
 	margin:3px;
 }
 
+.code{
+	text-align: left;	
+}
+
 li{
 	padding:5px 0;
 }

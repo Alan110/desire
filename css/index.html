@@ -4,6 +4,9 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <title></title>
 <link rel="stylesheet" href="base.css" type="text/css" media="screen" charset="utf-8">
+
+<!-- 代码高亮插件https://github.com/google/code-prettify -->
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 </head>
 <body>
 	<h1>flex</h1>	
@@ -20,9 +23,9 @@
 
 	<row>
 		<li>justify-content:space-between <span class="c-red">水平方向上如何排列剩余的空间</span></li>
-		<li> display:-webkit-flex; <span class="c-red">只要设置这个,内部的元素都会变成行内元素</span></li>
-		<li> -webkit-box-flex:1;  <span class="c-red">设置等分属性,会按剩余宽度来进行比例分配,不一定要写</span></li>
 		<li> -webkit-align-items:center; <span class="c-red">items属性设置子元素在垂直方向上如何放置</span></li>
+		<li> display:-webkit-flex; <span class="c-red">只要设置这个,内部的元素都会变成行内元素</span></li>
+		<li> -webkit-box-flex:1;  <span class="c-red">设置等分属性,会按剩余宽度来进行比例分配,其实相当于设置一个宽度,有个bug,某些浏览器下,不能正确按比例,需要给一个宽度</span></li>
 	</row>
 
 	<h2>等间距水平排列</h2>
@@ -114,5 +117,14 @@
 			我是flex实现的!!!
 		</div>	
 	</row>
+
+
+
+	<h1>去掉移动端点击默认样式</h1>
+	<pre class="prettyprint linenums lang-html">
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	</pre>
 </body>
 </html>
