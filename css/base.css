@@ -23,6 +23,7 @@ h2{
 }
 
 row{
+	position: relative;
 	display:block;
 	margin:3px;
 }
