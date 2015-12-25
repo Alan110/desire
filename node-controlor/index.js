@@ -1,7 +1,6 @@
 /**
  * Created by Administrator on 2015/5/31 0031.
  */
-var http = require('http');
 var url = require('url');
 var path = require("path");
 var fs = require("fs");
@@ -16,7 +15,9 @@ var path2handle = {
 
 
 function resourceAccess(req,res){
-    var pathname = __dirname + url.parse(req.url).pathname;
+	//别用__dirname, 这是返回当前文件的目录
+	//process.cwd()是返回node执行目录
+    var pathname = process.cwd() + url.parse(req.url).pathname;
         fs.exists(pathname,function(exist){
             if(exist){
                 switch (path.extname(pathname)){
@@ -46,7 +47,7 @@ function resourceAccess(req,res){
                 //�����ļ�������
                 fs.readFile(pathname,function(err,data){
                     res.end(data);
-                })
+                });
             }else{
                 //�Ҳ���·��
                 res.writeHead(200, {'Content-Type': 'text/html'});
@@ -56,9 +57,7 @@ function resourceAccess(req,res){
         }) ;
 }
 
-
-function start() {
-    http.createServer(function (req, res) {
+function controlor(req,res) {
         //·�ɿ���
         var path = url.parse(req.url).path;
         if(!path2handle[path]){
@@ -71,11 +70,9 @@ function start() {
             var module =  require("./module/" + actionName + ".js" );
             module[methodName](req,res);
         }
-
-    }).listen(8888);
-
-    console.log('Server running at http://127.0.0.1:8888/');
 }
 
-start();
+module.exports = controlor;
+
+
 

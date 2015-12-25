@@ -1,8 +1,8 @@
 {
-  "name": "node-server",
+  "name": "node-controlor",
   "version": "1.0.0",
   "description": "node实现简单的web服务器",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
