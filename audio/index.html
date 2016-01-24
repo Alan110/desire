@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+<title></title>
+<script src="http://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+<script src="http://cdn.bootcss.com/require.js/2.1.22/require.min.js"></script>
+<script>
+	requirejs.config({
+		baseUrl:"js"
+	});
+</script>
+</head>
+<body>
+<div>
+<span class="currentTime"></span>
+<span class="duration"></span>
+</div>
+<button class="play"> play </button>
+<button class="pause"> pause </button>
+
+<script>
+	require(["APlayer"],function(APlayer){
+		var music = new APlayer({
+			src : "https://ss1.baidu.com/8aQDcnSm2Q5IlBGlnYG/stat/ogg/xinsui.mp3",
+			audioEvt : {
+				canplay : function(){
+				},
+				timeupdate : function(){
+					$('.currentTime').html(this.audio.currentTime);
+				}
+			}
+
+		});
+
+		$(".play").on("touchend",function(){
+			music.play();	
+		});
+		$(".pause").on("touchend",function(){
+			music.pause();	
+		});
+	});
+
+</script>
+
+</body>
+</html>

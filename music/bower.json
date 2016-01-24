@@ -1,0 +1,18 @@
+{
+  "name": "music",
+  "homepage": "https://github.com/Alan110/desire",
+  "authors": [
+    "lijialong01 <lijialong01@baidu.com>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
