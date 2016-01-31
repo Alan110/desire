@@ -1,4 +1,4 @@
-define(function(){
+;(function(){
 
 	var _init = function(){
 		var audio = this.audio = document.createElement('audio');
@@ -63,8 +63,16 @@ define(function(){
 	
 	});
 
-	return constructor;
 
-});
+	//兼容amd,cmd,原生js接口
+	if(typeof module !== 'undefined' && typeof exports === 'object' && define.cmd){
+		module.exports = constructor;	
+	}else if(typeof define === 'function' && define.amd){
+		define(function(){
+			return constructor;	
+		});
+	}else{
+		window.APlayer = constructor;	
+	}
 
-
+})();
