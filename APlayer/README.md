@@ -45,12 +45,16 @@
 * option.audioEvt
 >配置对象,支持所有原生audio的事件
 
+____
+
 * player.play(second)
 >开始播放,可以指定当前的播放时间,单位秒
 
 * player.pause(second)
 >暂停播放,可以指定当前的播放时间,单位秒
 
+* player.timeFormat(time);
+>时间格式化为00:00的格式
 
 
 
