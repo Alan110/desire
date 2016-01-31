@@ -2,7 +2,9 @@ define(function(){
 
 	var _init = function(){
 		var audio = this.audio = document.createElement('audio');
-		audio.src = this.src;
+		for( var prop in this.audioProp ){
+			audio[prop]  = this.audioProp[prop];
+		}
 		document.body.appendChild(audio);
 	};
 
@@ -23,7 +25,9 @@ define(function(){
 
 	function constructor(opton){
 		var opton =	_extend({
-						src : '',
+						audioProp : {
+
+						},
 						audioEvt : {
 						
 						},
@@ -39,12 +43,22 @@ define(function(){
 	}
 
 	_extend(constructor.prototype,{
-		play : function(){
+		play : function(second){
+			second && (this.audio.currentTime = second);
 			this.audio.play();		
 		},
 
-		pause : function(){
+		pause : function(second){
+			second && (this.audio.currentTime = second);
 			this.audio.pause();	
+		},
+
+		timeFormat : function timeFormat(number) {
+			var minute = parseInt(number / 60);
+			var second = parseInt(number % 60);
+			minute = minute >= 10 ? minute : "0" + minute;
+			second = second >= 10 ? second : "0" + second;
+			return minute + ":" + second;
 		}
 	
 	});

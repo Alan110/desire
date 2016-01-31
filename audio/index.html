@@ -23,12 +23,16 @@
 <script>
 	require(["APlayer"],function(APlayer){
 		var music = new APlayer({
-			src : "https://ss1.baidu.com/8aQDcnSm2Q5IlBGlnYG/stat/ogg/xinsui.mp3",
+			audioProp : {
+				title : '给我一个理由忘记',
+				loop : true,
+				src : "https://ss1.baidu.com/8aQDcnSm2Q5IlBGlnYG/stat/ogg/xinsui.mp3",
+			},
 			audioEvt : {
 				canplay : function(){
 				},
 				timeupdate : function(){
-					$('.currentTime').html(this.audio.currentTime);
+					$('.currentTime').html(this.timeFormat(this.audio.currentTime));  
 				}
 			}
 
@@ -38,7 +42,7 @@
 			music.play();	
 		});
 		$(".pause").on("touchend",function(){
-			music.pause();	
+			music.pause(5);	
 		});
 	});
 
