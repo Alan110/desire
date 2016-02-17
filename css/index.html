@@ -98,8 +98,20 @@
 			display:inline-block;
 		}
 		.child{
-		display:inline-block;
+			display:inline-block;
 			vertical-align:middle;
+		}
+		.parent-absolute{
+			height:200px
+		}
+		.child-absolute{
+			position: absolute;
+			top:50%;
+			left:50%;
+			width:100px;
+			height:100px;
+			margin-left:-50px;
+			margin-top:-50px;
 		}
 
 		.parent-flex{
@@ -112,7 +124,16 @@
 		}
 	</style>
 	<row class="parent b-green">
-		<div class="child">我是inline-block实现的!!! </div>	
+		<div class="child">
+			<div>我是inline-block实现的!!!原理是利用行内元素在一行,vertical-align:middle会使得元素居中.故插入一个额外的inline-block元素撑满整个容器,变成一行</div>
+			<div>兼容ie6.7可以不用伪类,手动插入这个空元素</div>
+		</div>	
+	</row>
+	<row class="parent-absolute b-red">
+		<div class="child-absolute">
+			<div>我是绝对定位实现</div>
+			<div>优点是兼容性好,缺点是需要知道宽高</div>
+		</div>	
 	</row>
 	<row class="parent-flex b-yellow">
 		<div>
@@ -195,5 +216,29 @@
 		<div class="upbtn"></div>
 	</row>
 
+
+	<h1>border实现三角形</h1>
+	<style>
+		.sg{
+			width:0;
+			height:0;
+			border-top:30px solid red;
+			border-left:30px solid blue;
+			border-bottom:30px solid yellow;
+			border-right:30px solid black;
+		}	
+		.sg2{
+			margin-top:10px;
+			width:0;
+			height:0;
+			border-top:30px solid red;
+			border-left:30px solid transparent;
+			border-right:30px solid transparent;
+		}	
+	</style>
+	<row>
+		<div class="sg"></div>	
+		<div class="sg2"></div>	
+	</row>
 </body>
 </html>

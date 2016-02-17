@@ -23,36 +23,52 @@
 		return o1;
 	};
 
-	function constructor(opton){
-		var opton =	_extend({
-						audioProp : {
+	/*
+	 *   构造函数
+	 */
+	function Constructor(opton){
+		opton =	_extend({
+			audioProp : {
 
-						},
-						audioEvt : {
-						
-						},
-						cssSelector : {
-							
-						}
+			},
+			audioEvt : {
+			
+			},
+			cssSelector : {
+				
+			}
 		
-					},opton);
+		},opton);
 
 		_extend(this,opton);
 		_init.call(this);
 		_bindEvt.call(this);
 	}
 
-	_extend(constructor.prototype,{
+	_extend(Constructor.prototype,{
+		/*
+		 *   播放
+		 *	 second 指定当前的播放时间 
+		 */
 		play : function(second){
 			second && (this.audio.currentTime = second);
 			this.audio.play();		
 		},
 
+		/*
+		 *   暂停
+		 *   second 指定当前的播放时间
+		 */
 		pause : function(second){
 			second && (this.audio.currentTime = second);
 			this.audio.pause();	
 		},
 
+
+		/*
+		 *   时间格式化
+		 *	 00:00
+		 */
 		timeFormat : function timeFormat(number) {
 			var minute = parseInt(number / 60);
 			var second = parseInt(number % 60);
@@ -66,13 +82,13 @@
 
 	//兼容amd,cmd,原生js接口
 	if(typeof module !== 'undefined' && typeof exports === 'object' && define.cmd){
-		module.exports = constructor;	
+		module.exports = Constructor;	
 	}else if(typeof define === 'function' && define.amd){
 		define(function(){
-			return constructor;	
+			return Constructor;	
 		});
 	}else{
-		window.APlayer = constructor;	
+		window.APlayer = Constructor;	
 	}
 
 })();

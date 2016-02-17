@@ -43,9 +43,11 @@ html5原生的audio其实已经非常强大和完善了,所以这个库尽可能
 >配置对象,支持所有原生audio的属性
 
 * option.audioEvt
->配置对象,支持所有原生audio的事件
+>配置对象,支持所有原生audio的事件,事件回调中的this指向APlayer对象.
 
 ____
+* player.audio
+>访问audio对象
 
 * player.play(second)
 >开始播放,可以指定当前的播放时间,单位秒
@@ -55,9 +57,5 @@ ____
 
 * player.timeFormat(time);
 >时间格式化为00:00的格式
-
-
-
-
 
 
