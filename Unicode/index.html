@@ -1,0 +1,26 @@
+<html><head><script language="Javascript"> 
+var classObj= 
+{ 
+ToUnicode:function(str) 
+{ 
+return escape(str).replace(/%/g,"\\").toLowerCase(); 
+}, 
+
+UnUnicode:function(str) 
+{ 
+return unescape(str.replace(/\\/g, "%")); 
+}, 
+
+copyingTxt:function(str) 
+{ 
+document.getElementById(str).select(); 
+document.execCommand("Copy"); 
+} 
+} 
+</script> 
+</head><body><textarea id="codes" style="width:500px;height:300px"></textarea><br><br> 
+<input type="button" value="Unicode加密" onclick="javascript:codes.value=classObj.ToUnicode(codes.value)"> 
+<input type="button" value="Unicode解密" onclick="javascript:codes.value=classObj.UnUnicode(codes.value)"> 
+<input type="button" value="复制上面文本" onclick="javascript:classObj.copyingTxt(&quot;codes&quot;)"> 
+<input type="button" value="清空上面内容" onclick="javascript:codes.value=&quot;&quot;">
+</body></html>
