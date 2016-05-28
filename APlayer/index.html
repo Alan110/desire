@@ -26,7 +26,8 @@
 			audioProp : {
 				title : '给我一个理由忘记',
 				loop : true,
-				src : "https://ss1.baidu.com/8aQDcnSm2Q5IlBGlnYG/stat/ogg/xinsui.mp3",
+                preload : "auto",
+				src : "./test_music.mp3",
 			},
 			audioEvt : {
 				canplay : function(){
@@ -38,11 +39,11 @@
 
 		});
 
-		$(".play").on("touchend",function(){
+		$(".play").on("click",function(){
 			music.play();	
 		});
 		$(".pause").on("touchend",function(){
-			music.pause(5);	
+			music.pause();	
 		});
 	});
 

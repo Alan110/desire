@@ -6,9 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-	"install":"npm link node-controlor",
-	"postupdate":"npm link node-controlor"
+    "install": "npm link node-controlor",
+    "postupdate": "npm link node-controlor"
   },
   "author": "alan",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "mongodb": "^2.1.14"
+  }
 }

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/my-app.css">
+  </head>
+  <body>
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+      <div class="content-block">
+        <p>Setting</p>
+         <p><a href="#" id="l-customer">客户</a></p>
+         <p><a href="#" id="l-linkman">联系人</a></p>
+         <p><a href="#" >产品</a></p>
+      </div>
+    </div>
+    <!-- Right panel with cover effect-->
+    <div class="panel panel-right panel-cover">
+      <div class="content-block">
+        <p>Right panel content goes here</p>
+      </div>
+    </div>
+    <!-- Views-->
+    <div class="views">
+      <!-- Your main view, should have "view-main" class-->
+      <div class="view view-main navbar-fixed">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="center sliding">客户支持系统</div>
+            <div class="right">
+              <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+              <div class="content-block-title">Welcome To My Awesome App</div>
+              <div class="content-block">
+                <div class="content-block-inner">
+                  <p>Couple of worlds here because my app is so awesome!</p>
+                  <p>Duis sed erat ac eros ultrices pharetra id ut tellus. Praesent rhoncus enim ornare ipsum aliquet ultricies. Pellentesque sodales erat quis elementum sagittis.</p>
+                </div>
+              </div>
+              <div class="content-block-title">
+				<div class="row">
+				  <div class="col-70" style="line-height:30px;">客户列表</div>
+				  <div class="col-30">
+					<a href="#" id="l-add-customer" class="button button-round">添加客户</a>
+				  </div>
+				</div>  
+			  </div>
+              <div class="list-block" id="l-customer-list"></div>
+              <div class="content-block" id="l-loading-wrapper" style="text-align:center;">
+                  <span class="preloader l-loading"></span>
+              </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="view view-linkman navbar-fixed" style="display:none;">
+                <!-- Top Navbar-->
+                <div class="navbar">
+                  <div class="navbar-inner">
+                    <!-- We have home navbar without left link-->
+                    <div class="center sliding">联系人列表</div>
+                    <div class="right">
+                      <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+                <div class="pages navbar-through toolbar-through">
+                  <!-- Page, data-page contains page name-->
+                  <div data-page="link-index" class="page">
+                    <!-- Scrollable page content-->
+                    <div class="page-content">
+                      <div class="content-block-title">Welcome To My Awesome App</div>
+                      <div class="content-block">
+                        <div class="content-block-inner">
+                          <p>Couple of worlds here because my app is so awesome!</p>
+                          <p>Duis sed erat ac eros ultrices pharetra id ut tellus. Praesent rhoncus enim ornare ipsum aliquet ultricies. Pellentesque sodales erat quis elementum sagittis.</p>
+                        </div>
+                      </div>
+                      <div class="content-block-title">
+                        <div class="row">
+                          <div class="col-70" style="line-height:30px;">联系人列表</div>
+                          <div class="col-30">
+                            <a href="#" id="l-add-link" class="button button-round">添加联系人</a>
+                          </div>
+                        </div>  
+                      </div>
+                      <div class="list-block" id="l-link-list"></div>
+                      <div class="content-block" id="l-loading-wrapper" style="text-align:center;">
+                          <span class="preloader l-loading"></span>
+                      </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+        </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script id="t-customer-list" type="text/html" charset="utf-8">
+        <ul>
+            {{#each data}}
+              <li class="swipeout" data-id="{{_id}}">
+                  <div class="swipeout-content item-content">
+                    <div class="item-inner"> 
+                      <div class="item-title">{{name}}</div>
+                    </div>
+                  </div>
+                  <div class="swipeout-actions-right">
+                        <a href="#" class="swipeout-delete" data-id="{{_id}}">Delete</a>
+                  </div>
+             </li>
+            {{/each}}
+        </ul>
+    </script>
+
+    <script id="t-customer-info" type="text/html" charset="utf-8">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left"><a href="#" class="link t-customer-back"> <i class="icon icon-back"></i><span>Back</span></a></div>
+            <div class="center sliding">客户详情</div>
+            <div class="right">
+              <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="pages">
+          <!-- Page, data-page contains page name-->
+          <div data-page="customer-info" class="page" id="customer-info">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+                <div class="list-block">
+                    <form action="/saveCustomer" method="post" enctype="x-www-form-urlencoded" class="ajax-submit ajax-submit-onchange">
+                      <input type="hidden" class="_id" name="_id" value="{{data[0]._id}}">
+                      <ul>
+                        <!-- Text inputs -->
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">客户名称</div>
+                              <div class="item-input">
+                                <input type="text" name="name" value="{{data[0].name}}" placeholder="Name">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">邮箱</div>
+                              <div class="item-input">
+                                <input type="email" name="email" value="{{data[0].email}}" placeholder="E-mail">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">电话</div>
+                              <div class="item-input">
+                                <input type="tel" placeholder="phone" value="{{data[0].phone}}" name="phone">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                          <li>
+                              <!-- Additional "smart-select" class -->
+                              <a href="#" class="item-link smart-select">
+                                <!-- select -->
+                                <select name="fruits">
+                                  <option value="apple" selected>Apple</option>
+                                  <option value="pineapple">Pineapple</option>
+                                  ...
+                                </select>
+                                <div class="item-content">
+                                  <div class="item-inner">
+                                    <!-- Select label -->
+                                    <div class="item-title">Fruit</div>
+                                    <!-- Selected value, not required -->
+                                    <div class="item-after">Apple</div>
+                                  </div>
+                                </div>
+                              </a>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">客户地址</div>
+                              <div class="item-input">
+                                <input type="text" placeholder="address" value="{{data[0].address}}" name="address">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <!-- Select -->
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">客户类型</div>
+                              <div class="item-input">
+                                <select  value="">
+                                  <option>客户</option>
+                                  <option>分销商</option>
+                                  <option>渠道供应商</option>
+                                  <option>集成商</option>
+                                  <option>合作伙伴</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <!-- 商机状态 -->
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">客户类型</div>
+                              <div class="item-input">
+                                <select>
+                                  <option>有意向</option>
+                                  <option>无意向</option>
+                                  <option>已成交</option>
+                                  <option>引导使用</option>
+                                  <option>未续费</option>
+                                  <option>待续费</option>
+                                  <option>已续费</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">员工人数</div>
+                              <div class="item-input">
+                                <input type="number" name="peopleNum" value="{{data[0].peopleNum}}" placeholder="Number">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">所有者</div>
+                              <div class="item-input">
+                                <input type="text" name="owner" value="{{data[0].owner}}" placeholder="owner">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">主要联系人</div>
+                              <div class="item-input">
+                                <input type="text" name="mainRelate" value="{{data[0].mainRelate}}" placeholder="mainRelate">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">职务</div>
+                              <div class="item-input">
+                                <input type="text" value="{{data[0].job}}" name="job" placeholder="job">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">备注</div>
+                              <div class="item-input">
+                                <textarea placeholder="note"  name="note">{{data[0].note}}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                  </form>
+				</div>
+            </div>
+          </div>
+        </div>
+    </script>
+
+    <!-- linker -->
+    <script id="t-linker-info" type="text/html" charset="utf-8">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left"><a href="#" class="link t-linker-back"> <i class="icon icon-back"></i><span>Back</span></a></div>
+            <div class="center sliding">联系人详情</div>
+            <div class="right">
+              <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="pages">
+          <!-- Page, data-page contains page name-->
+          <div data-page="linker-info" class="page" id="linker-info">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+                <div class="list-block">
+                    <form action="/saveLinkman" method="post" enctype="x-www-form-urlencoded" class="ajax-submit ajax-submit-onchange">
+                      <input type="hidden" class="_id" name="_id" value="{{data[0]._id}}">
+                      <ul>
+                        <!-- Text inputs -->
+                        <li>
+                          <a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search fruits">
+                            <!-- select -->
+                            <select name="customerId">
+                              {{#unless data[0].customerId}}
+                                     <option  selected>选择客户</option>
+                              {{/unless}}
+                              {{#each data[0].allCustomerNames}}
+                                  <option value="{{_id}}" {{#if select}} selected {{/if}}>{{name}}</option>
+                              {{/each}}
+                            </select>
+                            <div class="item-content">
+                              <div class="item-inner">
+                                <div class="item-title">客户名称</div>
+                                <div class="item-after"></div>
+                              </div>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">姓名</div>
+                              <div class="item-input">
+                                <input type="text" name="name" value="{{data[0].name}}" placeholder="Name">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">称呼</div>
+                              <div class="item-input">
+                                <input type="text" name="call" value="{{data[0].call}}" placeholder="Call">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">邮箱</div>
+                              <div class="item-input">
+                                <input type="email" name="email" value="{{data[0].email}}" placeholder="E-mail">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">电话</div>
+                              <div class="item-input">
+                                <input type="tel" placeholder="phone" value="{{data[0].phone}}" name="phone">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                          <li>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">职务</div>
+                              <div class="item-input">
+                                <input type="text" value="{{data[0].job}}" name="job" placeholder="job">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">备注</div>
+                              <div class="item-input">
+                                <textarea placeholder="note"  name="note">{{data[0].note}}</textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                  </form>
+				</div>
+            </div>
+          </div>
+        </div>
+    </script>
+
+
+
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="js/framework7.min.js"></script>
+    <!-- Path to your app js-->
+    <script type="text/javascript" src="js/my-app.js"></script>
+  </body>
+</html>

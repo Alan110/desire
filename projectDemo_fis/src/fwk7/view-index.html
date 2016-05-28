@@ -1,0 +1,44 @@
+      <div class="view view-main navbar-fixed">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="center sliding">客户支持系统</div>
+            <div class="right">
+              <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="index" class="page">
+
+			  <!-- 搜索条-->
+			  <form data-search-list="#l-customer-list" data-search-in=".item-title" class="searchbar searchbar-init">
+				<div class="searchbar-input">
+				  <input type="search" placeholder="Search"><a href="#" class="searchbar-clear"></a>
+				</div><a href="#" class="searchbar-cancel">Cancel</a>
+			  </form>
+			  <!-- Search bar 遮罩 -->
+			  <div class="searchbar-overlay"></div>
+
+            <!-- Scrollable page content-->
+            <div class="page-content">
+              <div class="content-block-title">
+				<div class="row">
+				  <div class="col-70" style="line-height:30px;">客户列表</div>
+				  <div class="col-30">
+					<a href="#" id="l-add-customer" class="button button-round active">添加客户</a>
+				  </div>
+				</div>  
+			  </div>
+              <div class="list-block" id="l-customer-list"></div>
+              <div class="content-block" id="l-loading-wrapper" style="text-align:center;">
+                  <span class="preloader l-loading"></span>
+              </div>
+
+                </div>
+              </div>
+            </div>
+          </div>

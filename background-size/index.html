@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link href="//cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.structure.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/jquery/3.0.0-beta1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script src="./js/vue.js"></script>
+  <style>
+    html,body{
+      height : 100%;
+    }
+    *{
+      padding:0;
+      margin:0;
+      box-sizing:border-box;
+    }
+    .main{
+      display : flex;
+      height : 100%;
+    }
+    .left{
+      flex : 5;
+      border:1px solid;
+      background-image: url(./img/bg-sz.jpg);
+    }
+    .right{
+      flex : 3;
+      border:1px solid;
+      padding : 100px 10px 10px 10px;
+    }
+    #drg-btn{
+      width:5px;
+      height:20px;
+      border:1px solid;
+      margin-top : -6px;
+      background-color : blue;
+      cursor : pointer;
+    }
+    #drag-wrap{
+      height:10px;
+      width:100px;
+      border:1px solid;
+      margin:0 20px;
+      position : relative;
+      top : 4px;
+    }
+    .drag-text{
+    }
+    .drag-line{
+      margin-top: 20px;
+      display : flex;
+    }
+    #choose-wrap input{
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="main"  id="app">
+  <div class="left" v-bind:style="leftStyleObj">
+  </div>
+  <div class="right">
+      <div class="drag-line">
+        <div class="drag-text">background-repeat:</div>
+        <div id="choose-wrap">
+          <input type="radio" name="v-rpt"  v-model="leftStyleObj.backgroundRepeat" value="inherit"> inherit
+          <input type="radio" name="v-rpt"  v-model="leftStyleObj.backgroundRepeat" value="no-repeat"> no-repeat
+          <input type="radio" name="v-rpt"  v-model="leftStyleObj.backgroundRepeat" value="repeat-x"> repeat-x
+          <input type="radio" name="v-rpt"  v-model="leftStyleObj.backgroundRepeat" value="repeat-y"> repeat-y
+          {{ leftStyleObj.backgroundRepat }}
+        </div>
+      </div>
+      <div class="drag-line">
+        <div class="drag-text">background-size:</div>
+        <div id="drag-wrap">
+          <div id="drg-btn" v-drag="leftStyleObj.backgroundSize"  class="draggable ui-widget-content"></div>
+        </div>
+        <div> <input id="v-bgs" type="text" :value="leftStyleObj.backgroundSize"></div>
+      </div>
+  </div>
+</div>
+
+<script>
+  $(function() {
+
+      Vue.directive('drag', {
+        params : ["r-prop"],
+        bind: function () {
+          // 准备工作
+          // 例如，添加事件处理器或只需要运行一次的高耗任务
+          var self = this;
+          $(this.el).draggable({
+              containment: $(this.el).parent(),
+              axis:"x",
+              scroll: false,
+              drag : function(event,ui){
+                  var par = self.expression.split(".");
+                  self.vm[par[0]][par[1]]  =  (ui.position.left * 10)  + "px";
+              }
+          });
+
+        },
+        update: function (newValue, oldValue) {
+        },
+        unbind: function () {
+          // 清理工作
+          // 例如，删除 bind() 添加的事件监听器
+          $(this.el).off();
+        }
+      })
+
+      var test = new Vue({
+         el : '#app' ,
+         data : {
+           bgszLeft : 0,
+           leftStyleObj : {
+             backgroundRepeat : "inherit",
+             backgroundSize : 2
+           },
+          method : {
+              changeBgs : function(e){
+                  //var style = this.leftStyleObj;
+                  //style["backgroundRepat"] = this.bac
+              }
+          }
+
+      }
+
+      });
+
+  });
+</script>
+  <script>
+
+  </script>
+
+
+
+
+
+</body>
+</html>
