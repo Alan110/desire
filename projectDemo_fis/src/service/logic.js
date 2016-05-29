@@ -8,6 +8,11 @@ function getTime(){
 }
 
 function router(app) {
+    
+    app.get("/getRole",function(){
+        
+    });
+    
     app.get('/allCustomers', function (req, res) {
         MongoClient.connect(dbUrl, function (err, db) {
             var customer = db.collection('customer');
@@ -267,6 +272,101 @@ function router(app) {
         });
     });
 
+   /************************************************************************* user*/
+    app.get('/allUser', function (req, res) {
+        MongoClient.connect(dbUrl, function (err, db) {
+            var customer = db.collection('user');
+            customer.find().toArray(function (err, result) {
+                res.send({
+                    data: result
+                });
+            });
+        });
+    });
+
+    app.get('/getUserInfo', function (req, res) {
+        MongoClient.connect(dbUrl, function (err, db) {
+            var user = db.collection('user');
+            var customer = db.collection('customer');
+            //console.log(req.query);
+            user.find(ObjectID(req.query._id)).toArray(function (err, result) {
+                if (result.length > 0) {
+                    res.send({
+                        data: result
+                    });
+                }
+            });
+        });
+    });
+
+    app.post('/saveUser', function (req, res) {
+        MongoClient.connect(dbUrl, function (err, db) {
+            var customer = db.collection('user');
+            var _id = req.body._id;
+            var name = req.body.name;
+            if (_id) {
+                customer.find({
+                    "_id": new ObjectID(_id)
+                }).toArray(function (err, result) {
+                    if (result.length > 0) {
+                        if (result[0].name !== name) {
+                            customer.find({
+                                "name": name
+                            }).toArray(function (err, result2) {
+                                if (result2.length > 0) {
+                                    //更新的名字已存在
+                                    res.send({
+                                        state: "e"
+                                    });
+                                    return;
+                                }
+                            });
+                        }
+                        delete req.body._id;
+                        if (req.body.customerId) {
+                            req.body.customerId = ObjectID(req.body.customerId);
+                        }
+                        customer.update({
+                            "_id": new ObjectID(_id)
+                        }, req.body);
+                        res.send({
+                            state: "ok"
+                        });
+
+                    } else {
+                        //没有找到这个人, 不能更新信息
+                        res.send({
+                            state: "n"
+                        });
+                    }
+
+                });
+
+            } else {
+                //id 不存在添加用户
+                req.body._id = new ObjectID();
+
+                customer.insert(req.body);
+                res.send({
+                    "_id": req.body._id
+                });
+            }
+        });
+    });
+
+    app.get('/removeUser', function (req, res) {
+        MongoClient.connect(dbUrl, function (err, db) {
+            var customer = db.collection('user');
+            var _id = req.query._id;
+            _id && customer.remove({
+                "_id": new ObjectID(_id)
+            })
+            res.send({
+                status: "ok"
+            });
+        });
+    });
+
     //############################################################################# product
 
     app.get('/allProducts', function (req, res) {
@@ -365,7 +465,7 @@ function router(app) {
             order.find().toArray(function (err, result) {
                 result.forEach(function (el, index) {
                     customer.find(new ObjectID(el.customerId)).toArray(function (err, result2) {
-                        el.customer = result2[0];
+                        el.customer = result2[0] || {};
                         // 最后一个时,返回数据
                         if (index == result.length - 1) {
                             res.send({

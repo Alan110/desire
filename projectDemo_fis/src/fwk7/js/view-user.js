@@ -1,27 +1,24 @@
 
-// 系统管理员 或者产品管理员可见
-//if( role == 1 || role == 2 ){
-    
-var productView = myApp.addView('.view-product', {
+var userView = myApp.addView('.view-user', {
     // Because we use fixed-through navbar we can enable dynamic navbar
     dynamicNavbar: true
 });
 
-myApp.onPageInit('product-index', function(page) {
+myApp.onPageInit('user-index', function(page) {
     // run createContentPage func after link was clicked
-    getData("allProducts")
+    getData("allUser")
         .then(function(data) {
             //渲染customer-list页
-            $$("#l-product-list").html(Template7.templates.tCustomerList(data));
+            $$("#l-user-list").html(Template7.templates.tCustomerList(data));
             $$("#l-loading-wrapper").remove();
             //点击进入info页
-            $$("#l-product-list").on("click", "li", function() {
-                getData("getProductInfo", {
+            $$("#l-user-list").on("click", "li", function() {
+                getData("getUserInfo", {
                     _id: $$(this).data("id")
                 }).then(function(data) {
                     console.log(data);
-                    data.data[0]['title'] = '产品详情';
-                    productView.router.loadContent(Template7.templates.tProductInfo(data));
+                    data.data[0]['title'] = '用户详情';
+                    userView.router.loadContent(Template7.templates.tUserInfo(data));
                 }, function(res) {
                     if (res == "no-data") {
                         console.warn(res);
@@ -30,11 +27,11 @@ myApp.onPageInit('product-index', function(page) {
             });
 
             // 点击删除,禁止冒泡,只用js api 删除,否则会触发li的点击
-            $$("#l-product-list .swipeout-delete").on("click", function(e) {
+            $$("#l-user-list .swipeout-delete").on("click", function(e) {
                 var li = $$(this).parent().parent();
                 myApp.confirm('您确定删除吗?', '删除该用户',
                     function() {
-                        toDo("removeProduct", {
+                        toDo("removeUser", {
                             _id: li.data("id")
                         }).then(function() {
                             myApp.swipeoutDelete(li);
@@ -51,21 +48,18 @@ myApp.onPageInit('product-index', function(page) {
                 return false;
             })
 
-            //添加product
-            $$("#l-add-product").on("click", function() {
-                productView.router.loadContent(Template7.templates.tProductInfo({
-                    data: [{title:"添加产品"}],
-                    type: "add"
-                }));
+            //添加user
+            $$("#l-add-user").on("click", function() {
+                    var data = {data:[{"title":'添加用户'}]};
+                    userView.router.loadContent(Template7.templates.tUserInfo(data));           
             });
-
 
         });
 }).trigger();
 
 
-myApp.onPageInit('product-info', function(page) {
-    $$('#l-add-saveProduct').on('click', function(e) {
+myApp.onPageInit('user-info', function(page) {
+    $$('#l-add-saveUser').on('click', function(e) {
         var $self = $$(this);
         setTimeout(function(){
             page.view.router.refreshPreviousPage()
@@ -78,6 +72,7 @@ myApp.onPageInit('product-info', function(page) {
             page.view.router.back();
         },600);
     });
+
 });
 
-//}
+

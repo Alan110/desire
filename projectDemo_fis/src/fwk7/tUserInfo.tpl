@@ -10,33 +10,14 @@
         </div>
         <div class="pages">
           <!-- Page, data-page contains page name-->
-          <div data-page="userInfo-info" class="page" id="userInfo-info">
+          <div data-page="user-info" class="page" id="user-info">
             <!-- Scrollable page content-->
             <div class="page-content">
                 <div class="list-block">
                     <form action="/saveUser" method="post" enctype="x-www-form-urlencoded" class="ajax-submit">
                       <input type="hidden" class="_id" name="_id" value="{{data[0]._id}}">
                       <ul>
-                        <!-- Text inputs -->
-                        <li>
-                          <a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search fruits">
-                            <!-- select -->
-                            <select name="customerId">
-                              {{#unless data[0].customerId}}
-                                     <option  selected>选择客户</option>
-                              {{/unless}}
-                              {{#each data[0].allCustomerNames}}
-                                  <option value="{{_id}}" {{#if select}} selected {{/if}}>{{name}}</option>
-                              {{/each}}
-                            </select>
-                            <div class="item-content">
-                              <div class="item-inner">
-                                <div class="item-title">客户名称</div>
-                                <div class="item-after"></div>
-                              </div>
-                            </div>
-                          </a>
-                        </li>
+                        <!-- Text inputs -->            
                         <li>
                           <div class="item-content">
                             <div class="item-inner">
@@ -80,14 +61,20 @@
                           <li>
                         </li>
                         <li>
-                          <div class="item-content">
-                            <div class="item-inner">
-                              <div class="item-title label">职务</div>
-                              <div class="item-input">
-                                <input type="text" value="{{data[0].job}}" name="job" placeholder="job">
+                          <a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search fruits">
+                            <!-- select -->
+                            <select name="role" value={{data[0].role}}>
+                                <option value="1" {{#js_compare "this.data[0].role == '1' "}}selected=selected{{/js_compare}}>系统管理员</opton>
+                                <option value="2" {{#js_compare "this.data[0].role == '2' "}}selected=selected{{/js_compare}}>产品管理员</opton>
+                                <option value="3" {{#js_compare "this.data[0].role == '3' "}}selected=selected{{/js_compare}}>销售员</opton>   
+                            </select>
+                            <div class="item-content">
+                              <div class="item-inner">
+                                <div class="item-title">用户角色</div>
+                                <div class="item-after"></div>
                               </div>
                             </div>
-                          </div>
+                          </a>
                         </li>
                         <li>
                           <div class="item-content">
@@ -101,7 +88,7 @@
                         </li>
                       </ul>
 				  <div class="content-block-title">
-						<input id="l-add-saveLinker" type="submit" class="button active" style="height:40px;line-height:40px;" value="确定">
+						<input id="l-add-saveUser" type="submit" class="button active" style="height:40px;line-height:40px;" value="确定">
 				  </div>
                   </form>
 				</div>

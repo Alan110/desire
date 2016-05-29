@@ -8,13 +8,31 @@ var $$ = Dom7;
 var mySite = 'http://127.0.0.1:8888/';
 
 function getData(query, data) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         $$.ajax({
             url: mySite + query,
             data: data,
             dataType: "json",
             crossDomain: true,
-            success: function(res) {
+            success: function (res) {
+                if (res.data) {
+                    resolve(res);
+                } else {
+                    reject("no-data");
+                }
+            }
+        })
+    });
+}
+
+function getRole() {
+    return new Promise(function (resolve, reject) {
+        $$.ajax({
+            url: mySite + "getRole",
+            data: data,
+            dataType: "json",
+            crossDomain: true,
+            success: function (res) {
                 if (res.data) {
                     resolve(res);
                 } else {
@@ -26,13 +44,13 @@ function getData(query, data) {
 }
 
 function toDo(query, data) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         $$.ajax({
             url: mySite + query,
             data: data,
             dataType: "json",
             crossDomain: true,
-            success: function(res) {
+            success: function (res) {
                 if (res.status === "ok") {
                     resolve(res);
                 } else {
@@ -49,37 +67,17 @@ function leftPanel() {
     var $product = $$(".view-product");
     var $order = $$(".view-order");
 
-    $$("#l-linkman").on("click", function() {
+    var $views = $$(".view");
+    var $panel = $$(".panel-left");
+
+    $panel.on("click", ".l-section", function () {
         myApp.closePanel();
-        $linker.show();
-        $index.hide();
-        $product.hide();
-        $order.hide();
+        var page = $$(this).data("page");
+        $views.hide();
+        $$(".view[data-page=" + page + "]").show();
     });
 
-    $$("#l-customer").on("click", function() {
-        myApp.closePanel();
-        $index.show();
-        $linker.hide();
-        $product.hide();
-        $order.hide();
-    });
 
-    $$("#l-product").on("click", function() {
-        myApp.closePanel();
-        $product.show();
-        $index.hide();
-        $linker.hide();
-        $order.hide();
-    });
-
-    $$("#l-order").on("click", function() {
-        myApp.closePanel();
-        $order.show();
-        $product.hide();
-        $index.hide();
-        $linker.hide();
-    });
 }
 
 (function init() {
@@ -90,3 +88,4 @@ __inline('view-index.js');
 __inline('view-linker.js');
 __inline('view-product.js');
 __inline('view-order.js');
+__inline('view-user.js');
