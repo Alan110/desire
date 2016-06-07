@@ -13,13 +13,14 @@
                             </div>
                             <div style="max-width:207px;">{{_id}}</div>
                         </div>
-
                       </div>
                     </div>
-                  </div>
+                  </div  >
+                  {{#if admin}}
                   <div class="swipeout-actions-right">
                         <a href="#" class="swipeout-delete" data-id="{{_id}}">Delete</a>
                   </div>
+                  {{/if}}
              </li>
             {{/each}}
         </ul>

@@ -1,4 +1,3 @@
-
 var userView = myApp.addView('.view-user', {
     // Because we use fixed-through navbar we can enable dynamic navbar
     dynamicNavbar: true
@@ -10,7 +9,7 @@ myApp.onPageInit('user-index', function(page) {
         .then(function(data) {
             //渲染customer-list页
             $$("#l-user-list").html(Template7.templates.tCustomerList(data));
-            $$("#l-loading-wrapper").remove();
+            $$("#l-loading-wrapper-user").remove();
             //点击进入info页
             $$("#l-user-list").on("click", "li", function() {
                 getData("getUserInfo", {
@@ -18,6 +17,7 @@ myApp.onPageInit('user-index', function(page) {
                 }).then(function(data) {
                     console.log(data);
                     data.data[0]['title'] = '用户详情';
+                    data.data[0]['userRole'] = role;
                     userView.router.loadContent(Template7.templates.tUserInfo(data));
                 }, function(res) {
                     if (res == "no-data") {
@@ -50,8 +50,13 @@ myApp.onPageInit('user-index', function(page) {
 
             //添加user
             $$("#l-add-user").on("click", function() {
-                    var data = {data:[{"title":'添加用户'}]};
-                    userView.router.loadContent(Template7.templates.tUserInfo(data));           
+                var data = {
+                    data: [{
+                        "title": '添加用户',
+                        "userRole" : role
+                    }]
+                };
+                userView.router.loadContent(Template7.templates.tUserInfo(data));
             });
 
         });
@@ -61,18 +66,16 @@ myApp.onPageInit('user-index', function(page) {
 myApp.onPageInit('user-info', function(page) {
     $$('#l-add-saveUser').on('click', function(e) {
         var $self = $$(this);
-        setTimeout(function(){
+        setTimeout(function() {
             page.view.router.refreshPreviousPage()
-            $self.val("提交中...").attr("disabled","disabled");
-        },0);
-        setTimeout(function(){
+            $self.val("提交中...").attr("disabled", "disabled");
+        }, 0);
+        setTimeout(function() {
             $self.val("提交成功");
-        },300);
-        setTimeout(function(){
+        }, 300);
+        setTimeout(function() {
             page.view.router.back();
-        },600);
+        }, 600);
     });
 
 });
-
-

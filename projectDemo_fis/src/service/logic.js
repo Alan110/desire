@@ -9,8 +9,47 @@ function getTime(){
 
 function router(app) {
     
-    app.get("/getRole",function(){
+    app.get("/getRole",function(req,res){
+        if(req.session.uid ) {
+            MongoClient.connect(dbUrl, function (err, db) {
+                var user = db.collection('user');
+                user.find({_id:ObjectID(req.session.uid)}).toArray(function (err, result) {
+                    if (result.length > 0 ) {
+                        res.send({
+                            status:"login",
+                            "user":result[0]
+                        });
+                    }else{
+                        res.send({status : "error"});
+                    }
+                });
+
+            });
+        }else{
+            res.send({status : "redirect"});
+        }
         
+    });
+
+    app.post("/login",function(req,res){
+            MongoClient.connect(dbUrl, function (err, db) {
+                var user = db.collection('user');
+                var userName = req.body.name || null;
+                var userPswd = req.body.pswd;
+                if(!userName || !userPswd){
+                    res.send({status : "error"});
+                    return;
+                }
+                user.find({name:userName}).toArray(function (err, result) {
+                    if (result.length > 0 && result[0].pswd == userPswd) {
+                        req.session.uid = result[0]._id;
+                        res.send({status:"login"});
+                    }else{
+                        res.send({status : "error"});
+                    }
+                });
+            });
+            
     });
     
     app.get('/allCustomers', function (req, res) {
@@ -46,7 +85,10 @@ function router(app) {
             var t2 = new Promise(function (resolve, reject) {
                 linker.find().toArray(function (err, result) {
                     result.forEach(function (el, index) {
-                        if (resData.data) {
+                        if (resData.data && resData.data[0]["linker[]"]) {
+                            if ( typeof resData.data[0]["linker[]"] == "string") {
+                                resData.data[0]["linker[]"] = [resData.data[0]["linker[]"]];
+                            }
                             resData.data[0]["linker[]"].forEach(function (jl, jndex) {
                                 if (jl == el._id) {
                                     result[index].select = true;
@@ -275,11 +317,20 @@ function router(app) {
    /************************************************************************* user*/
     app.get('/allUser', function (req, res) {
         MongoClient.connect(dbUrl, function (err, db) {
-            var customer = db.collection('user');
-            customer.find().toArray(function (err, result) {
-                res.send({
-                    data: result
-                });
+            var user = db.collection('user');
+            user.find({_id:ObjectID(req.session.uid)}).toArray(function(err,result){
+                //管理员查找所有用户
+                if (result[0] && result[0].role == '1') {
+                    user.find().toArray(function(err,result2){
+                        res.send({
+                            data: result2
+                        });
+                    });
+                }else{
+                    res.send({
+                        data: result
+                    });
+                }
             });
         });
     });
@@ -475,6 +526,12 @@ function router(app) {
                     });
 
                 });
+
+                if (result.length < 1) {
+                    res.send({
+                        data: []
+                    });
+                }
 
 
             });

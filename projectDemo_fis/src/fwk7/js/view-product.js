@@ -1,6 +1,3 @@
-
-// 系统管理员 或者产品管理员可见
-//if( role == 1 || role == 2 ){
     
 var productView = myApp.addView('.view-product', {
     // Because we use fixed-through navbar we can enable dynamic navbar
@@ -80,4 +77,3 @@ myApp.onPageInit('product-info', function(page) {
     });
 });
 
-//}

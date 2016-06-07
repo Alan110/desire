@@ -21,13 +21,24 @@
                         <li>
                           <div class="item-content">
                             <div class="item-inner">
-                              <div class="item-title label">姓名</div>
+                              <div class="item-title label">用户名</div>
                               <div class="item-input">
                                 <input type="text" name="name" value="{{data[0].name}}" placeholder="Name">
                               </div>
                             </div>
                           </div>
                         </li>
+                        <li>
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <div class="item-title label">密码</div>
+                              <div class="item-input">
+                                <input type="text" name="pswd" value="{{data[0].pswd}}" placeholder="Name">
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+
                         <li>
                           <div class="item-content">
                             <div class="item-inner">
@@ -60,10 +71,12 @@
                         </li>
                           <li>
                         </li>
-                        <li>
+                        <li data-role="{{data[0].role}}" {{#js_compare "this.data[0].userRole != '1' "}}style="display:none;"{{/js_compare}}
+>
                           <a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search fruits">
                             <!-- select -->
                             <select name="role" value={{data[0].role}}>
+                                <option>请选择</opton>
                                 <option value="1" {{#js_compare "this.data[0].role == '1' "}}selected=selected{{/js_compare}}>系统管理员</opton>
                                 <option value="2" {{#js_compare "this.data[0].role == '2' "}}selected=selected{{/js_compare}}>产品管理员</opton>
                                 <option value="3" {{#js_compare "this.data[0].role == '3' "}}selected=selected{{/js_compare}}>销售员</opton>   

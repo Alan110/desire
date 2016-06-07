@@ -9,8 +9,13 @@ myApp.onPageInit('order-index', function(page) {
     getData("allOrders")
         .then(function(data) {
             //渲染customer-list页
+            if (role == 1) {
+               data.data.forEach(function(el,index){
+                   el["admin"] = 1;
+               });
+            }
             $$("#l-order-list").html(Template7.templates.tOrderList(data));
-            $$("#l-loading-wrapper").remove();
+            $$("#l-loading-wrapper-order").remove();
             //点击进入info页
             $$("#l-order-list").on("click", "li", function() {
                 getData("getOrderInfo", {

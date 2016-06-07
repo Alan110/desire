@@ -29,12 +29,15 @@ function getRole() {
     return new Promise(function (resolve, reject) {
         $$.ajax({
             url: mySite + "getRole",
-            data: data,
             dataType: "json",
             crossDomain: true,
             success: function (res) {
-                if (res.data) {
-                    resolve(res);
+                console.log(res);
+                if (res) {
+                    if(res.status == "redirect"){
+                        location.href = "login.html";
+                    }
+                    resolve(res.user.role);
                 } else {
                     reject("no-data");
                 }
@@ -76,16 +79,36 @@ function leftPanel() {
         $views.hide();
         $$(".view[data-page=" + page + "]").show();
     });
+}
 
+function changeView(role) {
+   if(role == 2) {
+        $$(".panel-left a[data-page=index]").remove();
+        $$(".panel-left a[data-page=order-index]").remove();
+        $$(".panel-left a[data-page=link-index]").remove();
+        $$(".view[data-page=index]").hide();
+        $$(".view[data-page=product-index]").show();
+   }
+   if (role != 1) {
+        $$("#l-add-user").remove();
+   }
+   if ( !(role == 1 || role == 2)) {
+        $$(".panel-left a[data-page=product-index]").remove();
+        $$(".view[data-page=product-index]").hide();
+   }
 
 }
 
-(function init() {
+function init(role) {
+    changeView(role);
     leftPanel();
-})();
+    __inline('view-index.js');
+    __inline('view-linker.js');
+    __inline('view-product.js');
+    __inline('view-order.js');
+    __inline('view-user.js');
+}
 
-__inline('view-index.js');
-__inline('view-linker.js');
-__inline('view-product.js');
-__inline('view-order.js');
-__inline('view-user.js');
+
+getRole().then(init);
+

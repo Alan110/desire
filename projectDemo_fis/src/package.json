@@ -5,8 +5,11 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.3",
     "express": "^4.13.4",
+    "express-session": "^1.13.0",
     "mongodb": "^2.1.14",
+    "mongoose": "^4.4.20",
     "node-controlor": "^1.0.0"
   },
   "scripts": {
