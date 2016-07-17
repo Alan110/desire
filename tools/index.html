@@ -46,6 +46,41 @@
 
 	console.log(time1,time2);
 
+
+	// 序列化,转换对象为querystring , 如果属性为对象,则转换为字符串
+	function serialize(obj) {
+		if (!obj) {
+			return '';
+		}
+		var str = '';
+		var item = '';
+		if (isObject(obj)) {
+			for (var k in obj) {
+				item = obj[k];
+				if (isObject(item)) {
+					item = JSON.stringify(item);
+				}
+				str += k + '=' + encodeURIComponent(item) + '&';
+			}
+			str = str.substring(0, str.length - 1); // 去掉末尾的&
+		} else if (isString(obj)) {
+			str = obj;
+		}
+
+		return str;
+   }
+
+
+    function isObject(obj) {
+        return Object.prototype.toString.call(obj) === '[object Object]';
+    }
+
+    function isString(param) {
+        return Object.prototype.toString.call(param) === '[object String]'
+    }
+
+
+
 </script>
 </body>
 </html>

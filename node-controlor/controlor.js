@@ -5,15 +5,21 @@ var url = require('url');
 var path = require("path");
 var fs = require("fs");
 
-//����·��
+// 默认在当前目录寻找action文件
+var actionDirPath = './';
+
+//路由配置
 var path2handle = {
-    "/index":{"action":"index","method":"index"},
-    "/3dimg":{"action":"index","method":"img3d"},
-    "/upload":{"action":"upload","method":"method"},
-    "/login":{"action":"login","method":"login"}
+    "/index":{"action":"action","method":"index"}
 };
 
-
+/**
+ * 访问静态资源
+ *
+ * @param req
+ * @param res
+ * @returns {undefined}
+ */
 function resourceAccess(req,res){
 	//别用__dirname, 这是返回当前文件的目录
 	//process.cwd()是返回node执行目录
@@ -57,22 +63,60 @@ function resourceAccess(req,res){
         }) ;
 }
 
-function controlor(req,res) {
-        //·�ɿ���
+
+/**
+ * 路由入口
+ *
+ * @param req
+ * @param res
+ * @returns {undefined}
+ */
+function route(req,res) {
+        //没找到路由配置,则访问静态资源
         var path = url.parse(req.url).path;
         if(!path2handle[path]){
-           //���ʾ�̬��Դ
             resourceAccess(req,res);
         }else{
-            //�������úõ�ӳ��
+            //访问相应的action和method名
             var actionName = path2handle[path]["action"];
             var methodName = path2handle[path]["method"];
-            var module =  require("./module/" + actionName + ".js" );
+            var module =  require(actionDirPath + actionName + ".js" );
             module[methodName](req,res);
         }
 }
 
-module.exports = controlor;
+/**
+ * 配置路由
+ *
+ * @param path      访问路径 '/xxx'
+ * @param option    .action action名默认'action', .method 方法名默认路径名
+ * @returns {undefined}
+ */
+function setRoutePath(path,option){
+    var defaultOption = {
+        action : 'action',
+        method : path.substring(1)
+    };
+
+    path2handle[path] = Object.assign(defaultOption,option);
+}
+
+
+/**
+ * 设置action文件夹路径
+ *
+ * @param path
+ * @returns {undefined}
+ */
+function setActionDirPath(path) {
+    actionPath = path;
+}
+
+module.exports = {
+    route,
+    setRoutePath,
+    setActionDirPath
+};
 
 
 
