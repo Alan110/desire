@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+</head>
+<body>
+
+<style>
+@-webkit-keyframes upbtn{
+	0%{-webkit-transform:translateY(0px);opacity:0}
+	50%{-webkit-transform:translateY(-5px);opacity:1}
+	100%{-webkit-transform:translateY(-10px);opacity:0}
+}
+
+.scence{
+	width:100%;
+	height:100%;
+	z-index:10;	
+	position: absolute;
+	top:0;
+	left:0;
+	background-size:cover;
+	-webkit-backface-visibility:hidden;
+	transform:translate3d(0,100%,0);
+}
+
+.stage{
+	position: absolute;
+	top:0;
+	left:0;
+	overflow:hidden;
+	-webkit-perspective:2000;
+	-webkit-backface-visibility:hidden;
+	transform-style:preserve-3d;
+	width:100%;
+	height:100%;
+}
+
+.s1{
+	background-image:url('http://activecdn.fruitday.com/sale/orange1117/images/photo/1.jpg');
+}
+.s2{
+	background-image:url('http://activecdn.fruitday.com/sale/orange1117/images/photo/2.jpg');
+}
+.s3{
+	background-image:url('http://activecdn.fruitday.com/sale/orange1117/images/photo/3.jpg');
+}
+.s4{
+	background-image:url('http://activecdn.fruitday.com/sale/orange1117/images/photo/4.jpg');
+}
+</style>
+
+<div class="stage" data-step="1">
+<div class="scence s1" style="transform:translate3d(0,0,0);"></div>
+<div class="scence s2"></div>
+<div class="scence s3"></div>
+<div class="scence s4"></div>
+</div>
+<script src="./zepto.min.my.js"></script>
+<script>
+
+var startTouch = {
+	x: 0,
+	y: 0
+};
+
+var TouchInfo = {
+	x:0,
+	y:9,
+	touched:false
+};
+
+var sChange = {
+	curY: 0,
+	preY: 0,
+	nxtY: 0,
+	isAnimate: !1,
+	animateNum: 0,
+	threhold: 50,
+	pages: 5,
+	isStart: true,
+	getStep: function () {
+		var t = $(".stage").data("step"),
+			next = t + 1,
+			pref = t - 1;
+		if (t === 4) {
+			window.location.href="orange.html";
+		}
+		return 1 == t ? pref = null : t == this.pages && (next = null), {
+			step: t,
+			nxStep: next,
+			preStep: pref
+		}
+	},
+	move: function (t) {
+		if (!this.isStart)
+			return !1;
+		if (this.isAnimate)
+			return !1;
+
+		var e = this.getStep(),
+			n = $(window).height();
+		
+		console.log(e);
+
+		//手指向上滑动
+		if (0 > t) {
+			//手指向下滑动,当在第一页时退出
+			if (null == e.preStep)
+				return !1;
+			//滑动的距离大于屏幕高度退出
+			if (this.curY = t, this.preY = -(n + t), Math.abs(t) > n)
+				return !1;
+
+			//上一页的层级高于当前页
+			$(".s" + e.preStep).css("z-index", 5), $(".s" + e.step).css("z-index", 4);
+
+			//当前页变形
+			//总共绕x轴旋转60度,乘以滑动距离与屏幕高度的比例
+			$(".s" + e.step)[0].style.webkitTransform = "translateZ(" + this.curY + "px) translateY(" + -this.curY / 3 + "px) rotateX(" + 60 * (-this.curY / n) + "deg)";
+			//上一页位移
+			$(".s" + e.preStep)[0].style.webkitTransform = "translateY(" + this.preY + "px)";
+		} else {
+			//手指向上滑
+			//手指向上滑动,当在第最后页时退出
+			if (null == e.nxStep)
+				return !1;
+
+			if (this.curY = -t, this.nxtY = n - t, Math.abs(t) > n)
+				return !1;
+
+			$(".s" + e.nxStep).css("z-index", 5), $(".s" + e.step).css("z-index", 4);
+
+			$(".s" + e.step)[0].style.webkitTransform = "translateZ(" + this.curY + "px) translateY(" + this.curY / 3 + "px) rotateX(" + 60 * (this.curY / n) + "deg)"
+			$(".s" + e.nxStep)[0].style.webkitTransform = "translateY(" + this.nxtY + "px)";
+		}
+	},
+	goToEnd: function (t) {
+		if (!this.isStart)
+			return !1;
+
+		var e = this.getStep();
+		if (0 > t) {
+			if (this.threhold < -t && e.step > 1)
+			{
+				var sPreImg = $(".s" + e.preStep).children("img");
+				if (sPreImg.length > 0)
+				{
+					sPreImg.each(function (index) {
+						$(this).addClass("animate");
+					});
+				}
+				var sImg = $(".s" + e.step).children("img");
+				if (sImg.length > 0)
+				{
+					sImg.each(function (index) {
+						$(this).removeClass("animate");
+					});
+				}
+			}
+		} else {
+			if (this.threhold < t && e.step < this.pages)
+			{
+				var sNexImg = $(".s" + e.nxStep).children("img");
+				if (sNexImg.length > 0)
+				{
+					sNexImg.each(function (index) {
+						$(this).addClass("animate");
+					});
+				}
+				var sImg = $(".s" + e.step).children("img");
+				if (sImg.length > 0)
+				{
+					sImg.each(function (index) {
+						$(this).removeClass("animate");
+					});
+				}
+			}
+
+		}
+
+
+
+
+		this.dy = t;
+		var e = this,
+				n = this.getStep(),
+				i = $(".stage").height();
+		if (0 > t)
+			if (-this.threhold > t) {
+				if (null == n.preStep)
+					return !1;
+				e.isAnimate = !0, $(".s" + n.step).animate({
+					translateZ: "-400px",
+					translateY: -this.curY / 1.5 + "px",
+					rotateX: 80 * (-this.curY / i) + "deg"
+				}, 350, "ease-in-out", function () {
+					e.resetPre(n)
+				}), $(".s" + n.preStep).animate({
+					translateY: 0
+				}, 350, "ease-in-out", function () {
+					e.resetPre(n)
+				})
+			} else
+				e.isAnimate = !0, $(".s" + n.step).animate({
+					translateZ: "0px"
+				}, 350, "ease-in-out", function () {
+					e.isAnimate = !1
+				}), $(".s" + n.preStep).animate({
+					translateY: "-100%"
+				}, 350, "ease-in-out", function () {
+					e.isAnimate = !1
+				});
+		else if (t > this.threhold) {
+			if (null == n.nxStep)
+				return !1;
+			e.isAnimate = !0, $(".s" + n.step).animate({
+				translateZ: "-400px",
+				translateY: this.curY / 1.5 + "px",
+				rotateX: 80 * (this.curY / i) + "deg"
+			}, 350, "ease-in-out", function () {
+				e.resetNxt(n)
+			}), $(".s" + n.nxStep).animate({
+				translateY: 0
+			}, 350, "ease-in-out", function () {
+				e.resetNxt(n)
+			})
+		} else
+			e.isAnimate = !0, $(".s" + n.step).animate({
+				translateZ: "0px"
+			}, 350, "ease-in-out", function () {
+				e.isAnimate = !1
+			}), $(".s" + n.nxStep).animate({
+				translateY: "100%"
+			}, 350, "ease-in-out", function () {
+				e.isAnimate = !1
+			})
+	},
+	resetPre: function (t) {
+		1 != this.animateNum ? this.animateNum++ : ($(".stage").data("step", t.preStep), this.isAnimate = !1, $(".s" + t.step).css({
+			"z-index": 1,
+			"-webkit-transform": "translateX(0) translateY(100%) translateZ(0) rotateX(0deg)"
+		}), this.animateNum = 0)
+	},
+	resetNxt: function (t) {
+		1 != this.animateNum ? this.animateNum++ : ($(".stage").data("step", t.nxStep), this.isAnimate = !1, $(".s" + t.step).css({
+			"z-index": 1,
+			"-webkit-transform": "translateX(0) translateY(100%) translateZ(0) rotateX(0deg)"
+		}), this.animateNum = 0)
+	}
+};
+
+	$(document).on("touchstart", function (t) {
+		var e = t.changedTouches[0]
+		TouchInfo.touched = true,
+		startTouch.x = e.clientX,
+		startTouch.y = e.clientY
+	});
+
+	$(document).on("touchmove", function (t) {
+		t.preventDefault();
+		var e =  t.changedTouches[0] ;
+		return TouchInfo.touched ? (TouchInfo.x = e.clientX, TouchInfo.y = e.clientY, sChange.move(startTouch.y - e.clientY), void 0) : !1
+	}),
+
+	$(document).on("touchend", function (t) {
+		var e = t.changedTouches[0] ;
+//		TouchInfo.touched = !1, sChange.goToEnd(startTouch.y - e.clientY)
+	})
+
+</script>
+</body>
+</html>

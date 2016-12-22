@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title></title>
+</head>
+
+<body>
+
+    <style>
+        @-webkit-keyframes upbtn {
+            0% {
+                -webkit-transform: translateY(0px);
+                opacity: 0
+            }
+            50% {
+                -webkit-transform: translateY(-5px);
+                opacity: 1
+            }
+            100% {
+                -webkit-transform: translateY(-10px);
+                opacity: 0
+            }
+        }
+        .scence {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            -webkit-backface-visibility: hidden;
+            transform: translate3d(0, 100%, 0);
+        }
+        .stage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            -webkit-perspective: 2000;
+            -webkit-backface-visibility: hidden;
+            transform-style: preserve-3d;
+            width: 100%;
+            height: 100%;
+        }
+        .s1 {
+            background-image: url('http://activecdn.fruitday.com/sale/orange1117/images/photo/1.jpg');
+        }
+        .s2 {
+            background-image: url('http://activecdn.fruitday.com/sale/orange1117/images/photo/2.jpg');
+        }
+        .s3 {
+            background-image: url('http://activecdn.fruitday.com/sale/orange1117/images/photo/3.jpg');
+        }
+        .s4 {
+            background-image: url('http://activecdn.fruitday.com/sale/orange1117/images/photo/4.jpg');
+        }
+        .s5 {
+            background-color: #fff;
+        }
+        .upbtn {
+            background-image: url("http://activecdn.fruitday.com/sale/orange1117/images/photo/down_arrow.png");
+            background-repeat: no-repeat;
+            background-size: 20px auto;
+            width: 20px;
+            height: 15px;
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            margin-left: -10px;
+            z-index: 5;
+            -webkit-animation: upbtn infinite 2s linear;
+        }
+    </style>
+
+    <div class="stage" data-step="1">
+        <div class="scence s1" style="transform:translate3d(0,0,0);">
+            <div class="upbtn"></div>
+        </div>
+        <div class="scence s2"></div>
+        <div class="scence s3"></div>
+        <div class="scence s4"></div>
+        <div class="scence s5">
+            <h1>我是内容</h1>
+        <h1>我是内容</h1>
+            <h1>我是内容</h1>
+            <h1>我是内容</h1>
+            <h1>我是内容</h1>
+        </div>
+        <script src="./zepto.min.my.js"></script>
+        <script src="newway.js"></script>
+        <script>
+            window.onload = function()
+            {
+                alert('a');
+            }
+        </script>
+</body>
+
+</html>
